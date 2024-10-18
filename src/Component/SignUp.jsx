@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../store/authSlice";
+import { login } from "../store/authSlice";
 import { useDispatch } from "react-redux";
-import { Button, Input, Logo } from "../index";
+import { Button, Input, Logo } from "./index";
 import { useForm } from "react-hook-form";
-import authService from "../../AppWrite/Auth";
+import authService from "../AppWrite/Auth";
 
 const SignUp = () => {
     const { register, handleSubmit } = useForm();
@@ -89,3 +89,5 @@ const SignUp = () => {
         </div>
     );
 };
+
+export default SignUp

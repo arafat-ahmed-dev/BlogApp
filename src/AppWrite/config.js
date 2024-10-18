@@ -1,4 +1,4 @@
-import { Client, Account, ID, Databases, Storage, Query, Flag } from "appwrite";
+import { Client, ID, Databases, Storage, Query } from "appwrite";
 import conf from "../conf/conf.js";
 
 export class Service {
@@ -10,7 +10,7 @@ export class Service {
     this.databases = new Databases(this.client);
     this.bucket = new Storage(this.client);
   }
-  async createPost({ title, slug, content, featuredImage, status, userID }) {
+  async createPost({ title, slug, content, featuredImage, status, userId }) {
     try {
       return await this.databases.createDocument(
         conf.databaseId,
@@ -21,14 +21,14 @@ export class Service {
           content,
           featuredImage,
           status,
-          userID,
+          userId,
         }
       );
     } catch (error) {
-      throw error;
+      console.log("Appwrite serive :: createPost :: error", error);
     }
   }
-  async updateDocument(slug, { title, content, featuredImage, status }) {
+  async updatePost(slug, { title, content, featuredImage, status }) {
     try {
       return await this.databases.updateDocument(
         conf.databaseId,
@@ -42,11 +42,11 @@ export class Service {
         }
       );
     } catch (error) {
-      throw error;
+      console.log("Appwrite serive :: updatePost :: error", error);
     }
   }
 
-  async deleteDocument(slug) {
+  async deletePost(slug) {
     try {
       await this.databases.deleteDocument(
         conf.databaseId,
@@ -55,7 +55,7 @@ export class Service {
       );
       return true;
     } catch (error) {
-      console.log("error", error);
+      console.log("Appwrite serive :: deletePost :: error", error);
 
       return false;
     }
@@ -69,21 +69,23 @@ export class Service {
         slug
       );
     } catch (error) {
-      throw error;
+      console.log("Appwrite serive :: getPost :: error", error);
     }
   }
   //i want to those post which are active
-  async getPosts(query = [Query.equal("status", "active")]) {
+  async getPosts(queries = [Query.equal("status", "active")]){
     try {
-      return await this.databases.listDocuments(
-        conf.databaseId,
-        conf.collectionId,
-        query
-      );
+        return await this.databases.listDocuments(
+            conf.databaseId,
+            conf.collectionId,
+            queries,
+
+        )
     } catch (error) {
-      console.log("Appwrite service :: getPosts :: error", error);
+        console.log("Appwrite serive :: getPosts :: error", error);
+        return false
     }
-  }
+}
 
   async uploadFile(file) {
     try {
@@ -94,6 +96,7 @@ export class Service {
       return false;
     }
   }
+  
 
   async deleteFile(fileId) {
     try {

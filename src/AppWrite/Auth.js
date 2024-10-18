@@ -23,21 +23,28 @@ export class AuthService {
         return userAccount;
       }
     } catch (error) {
+      console.error(error)
       throw error;
     }
   }
 
-  async login({ email, password }) {
+  async login({email, password}) {
     try {
+      const session = await this.account.getSession('current');
+      if (session) {
+        console.log('User  is already logged in');
+        return session; // Return the existing session
+      }
       return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
+      console.log("Appwrite service :: login :: error", error);
       throw error;
     }
-  }
+}
 
   async logout() {
     try {
-      return await this.account.deleteSessions();
+       await this.account.deleteSessions();
     } catch (error) {
       throw error;
     }
@@ -45,11 +52,26 @@ export class AuthService {
 
   async getCurrentUser() {
     try {
-      return await this.account.get();
+       await this.account.get();
     } catch (error) {
       throw error;
     }
-    return null;
+    return null
+  }
+  async checkActiveSession() {
+    try {
+      const session = await this.account.getSession('current');
+      if (session) {
+        console.log('You are still logged in');
+        return true; // Return true if an active session exists
+      } else {
+        console.log('You are not logged in');
+        return false; // Return false if no active session exists
+      }
+    } catch (error) {
+      console.log('Error checking session:', error);
+      return false; // Return false if an error occurs
+    }
   }
 }
 

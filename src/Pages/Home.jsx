@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import appwriteService from "../AppWrite/config"
 import {Container, PostCard} from "../Component"
 
-export const Home = () => {
+const Home = () => {
     const [posts, setPosts] = useState([])
     useEffect(() => {
         appwriteService
@@ -10,12 +10,9 @@ export const Home = () => {
           .then((posts) => {
             if(posts) {setPosts(posts.documents)}
           })
-          .catch((error) => {
-            console.log(error)
-          })
     }, [])
 
-    if (posts.length == 0) {
+    if (posts.length === 0) {
         return (
             <div className='w-full py-8 mt-4 text-center'>
                 <Container>
@@ -42,3 +39,5 @@ export const Home = () => {
     </div>
   )
 }
+
+export default Home

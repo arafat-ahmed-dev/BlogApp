@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, RTE } from "../../index";
-import appwriteService from "../../../AppWrite/config";
+import { Button, Input, RTE } from "../index";
+import appwriteService from "../../AppWrite/config";
 import { useSelector } from "react-redux";
 
 const PostForm = ({ post }) => {
