@@ -73,7 +73,7 @@ export class Service {
     }
   }
   //i want to those post which are active
-  async getPosts(queries = [Query.equal("status", "active")]){
+  async getPosts(queries = [Query.equal("postStatus", "active")]){
     try {
         return await this.databases.listDocuments(
             conf.databaseId,
