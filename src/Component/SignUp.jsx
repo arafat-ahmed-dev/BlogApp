@@ -15,17 +15,19 @@ const SignUp = () => {
     const create = async (data) => {
         setError("");
         try {
+            console.log(data, "-------> data");
             const userData = await authService.createAccount(data);
+            console.log(userData, "-------> userData");
             if (userData) {
-                const userData = await authService.getCurrentUser();
-                if (userData) dispatch(login({ userData }));
+                const currentUser = await authService.getCurrentUser();
+                if (currentUser) dispatch(login({ userData: currentUser }));
                 navigate("/");
             }
         } catch (error) {
             setError(error.message);
         }
     };
-
+    
     return (
         <div className="flex items-center justify-center">
             <div
