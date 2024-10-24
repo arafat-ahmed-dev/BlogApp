@@ -31,23 +31,10 @@ export class AuthService {
 }
 
 
+
 async login({ email, password }) {
   try {
-      // Check if there is a current session
-      let session;
-      try {
-          session = await this.account.getSession("current");
-          console.log(session, "---------> session");
-      } catch (error) {
-          console.log("No existing session found. Creating new one...",error);
-      }
-
-      // If no session, create a new session with email and password
-      if (!session) {
-          session = await this.account.createEmailPasswordSession(email, password);
-          console.log(session, "-------------> New session created");
-      }
-
+      const session = await this.account.createEmailPasswordSession(email, password);
       return session;
   } catch (error) {
       console.error("Appwrite service :: login :: error", error);
@@ -64,14 +51,13 @@ async login({ email, password }) {
     }
   }
 
-  async getCurrentUser() {
+  async getCurrentUser(){
     try {
-      await this.account.get();
+        return await this.account.get()
     } catch (error) {
-      throw error;
+        console.log("Appwrite service :: getCurrentUser() :: ", error);
     }
-    return null;
-  }
+}
   async checkActiveSession() {
     try {
       const session = await this.account.getSession("current");

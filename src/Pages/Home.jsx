@@ -3,6 +3,8 @@ import appwriteService from "../AppWrite/config"
 import {Container, PostCard} from "../Component"
 
 const Home = () => {
+
+
     const [posts, setPosts] = useState([])
     useEffect(() => {
         appwriteService
@@ -18,7 +20,9 @@ const Home = () => {
                 <Container>
                     <div className='flex flex-wrap'>
                         <div className='p-2 w-full'>
-                            <h1 className='text-3xl font-bold hover:text-gray-500'>Login to read post</h1>
+                            <h1 className='text-3xl font-bold hover:text-gray-500'>
+                              Login to read post
+                            </h1>
                         </div>
                     </div>
                 </Container>

@@ -12,8 +12,7 @@ export default function Post() {
 
     const userData = useSelector((state) => state.auth.userData);
 
-    const isAuthor = post && userData ? post.userId === userData.$id : false;
-
+    const isAuthor = post && userData ? post.userId === userData.userData.$id : false;
     useEffect(() => {
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
@@ -60,7 +59,7 @@ export default function Post() {
                 </div>
                 <div className="browser-css">
                     {parse(post.content)}
-                    </div>
+                </div>
             </Container>
         </div>
     ) : null;
