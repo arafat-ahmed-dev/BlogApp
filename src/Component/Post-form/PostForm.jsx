@@ -123,7 +123,7 @@ const submit = async (data) => {
                     </div>
                 )}
                 <Select
-                    options={["active", "inactive"]}
+                    options={["Active", "Inactive"]}
                     label="Status"
                     className="mb-4"
                     {...register("status", { required: true })}
