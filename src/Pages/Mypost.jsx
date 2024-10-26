@@ -3,9 +3,10 @@ import { Container, PostCard } from "../Component";
 import appwriteService from "../AppWrite/config";
 import { useSelector } from "react-redux";
 
-function AllPosts() {
-  const authStatus = useSelector((state) => state.auth.userData.userData.$id);
+function MyPosts() {
   const [posts, setPosts] = useState([]);
+  const authStatus = useSelector((state) => state.auth);
+  const userPosts = posts.filter((post) => post.userId === authStatus.userData.userData.$id);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,7 +23,22 @@ function AllPosts() {
     fetchPosts();
   }, []);
 
-  const userPosts = posts.filter((post) => post.userId === authStatus);
+  if (!authStatus || userPosts.length === 0) {
+    return (
+      <div className='w-full py-8 mt-4 text-center'>
+        <Container>
+          <div className='flex flex-wrap'>
+            <div className='p-2 w-full'>
+              <h1 className='text-3xl font-bold hover:text-gray-500'>
+              You haven't posted anything yet. <br /> Start sharing your thoughts!
+              </h1>
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
 
   return (
     <div className="w-full py-8">
@@ -42,4 +58,4 @@ function AllPosts() {
   );
 }
 
-export default AllPosts;
+export default MyPosts;
