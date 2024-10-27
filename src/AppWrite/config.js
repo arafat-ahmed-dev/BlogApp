@@ -25,7 +25,7 @@ export class Service {
     }
   }
 
-  async getPosts(queries = [Query.equal("postStatus", "active")]) {
+  async getPosts(queries = [Query.equal("postStatus", "Active")]) {
     try {
       return await this.databases.listDocuments(
         conf.databaseId,
@@ -46,8 +46,6 @@ export class Service {
     postStatus,
     userId,
   }) {
-    console.log(userId);
-
     try {
       return await this.databases.createDocument(
         conf.databaseId,
