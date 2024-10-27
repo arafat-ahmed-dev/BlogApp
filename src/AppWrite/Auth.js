@@ -11,37 +11,37 @@ export class AuthService {
 
   async createAccount({ email, password, name }) {
     try {
-        const userAccount = await this.account.create(
-            ID.unique(),
-            email,
-            password,
-            name
-        );
+      const userAccount = await this.account.create(
+        ID.unique(),
+        email,
+        password,
+        name
+      );
 
-        if (userAccount) {
-            // Call login to create a session after account creation
-            return await this.login({ email, password });
-        } else {
-            return userAccount;
-        }
+      if (userAccount) {
+        // Call login to create a session after account creation
+        return await this.login({ email, password });
+      } else {
+        return userAccount;
+      }
     } catch (error) {
-        console.error("Appwrite service :: createAccount :: error", error);
-        throw error;
+      console.error("Appwrite service :: createAccount :: error", error);
+      throw error;
     }
-}
+  }
 
-
-
-async login({ email, password }) {
-  try {
-      const session = await this.account.createEmailPasswordSession(email, password);
+  async login({ email, password }) {
+    try {
+      const session = await this.account.createEmailPasswordSession(
+        email,
+        password
+      );
       return session;
-  } catch (error) {
+    } catch (error) {
       console.error("Appwrite service :: login :: error", error);
       throw error;
+    }
   }
-}
-
 
   async logout() {
     try {
@@ -50,14 +50,38 @@ async login({ email, password }) {
       throw error;
     }
   }
-
-  async getCurrentUser(){
+  // password recovery
+  async recoverPassword({ email, redirectUrl }) {
     try {
-        return await this.account.get()
+      const response = await this.account.createRecovery(email, redirectUrl);
+      return response;
     } catch (error) {
-        console.log("Appwrite service :: getCurrentUser() :: ", error);
+      console.error("Appwrite service :: recoverPassword :: error", error);
+      throw error;
     }
-}
+  }
+
+  async updatePassword({ userId, secret, password, confirmPassword }) {
+    try {
+      const response = await this.account.updateRecovery(
+        userId,
+        secret,
+        password,
+        confirmPassword
+      );
+      return response;
+    } catch (error) {
+      console.error("Appwrite service :: updatePassword :: error", error);
+      throw error;
+    }
+  }
+  async getCurrentUser() {
+    try {
+      return await this.account.get();
+    } catch (error) {
+      console.log("Appwrite service :: getCurrentUser() :: ", error);
+    }
+  }
   async checkActiveSession() {
     try {
       const session = await this.account.getSession("current");

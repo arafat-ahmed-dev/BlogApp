@@ -11,6 +11,8 @@ import AddPost from "./Pages/AddPost.jsx";
 import EditPost from "./Pages/EditPost.jsx";
 import Post from "./Pages/Post.jsx";
 import Home from "./Pages/Home.jsx";
+import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
+import ResetPassword from "./Pages/ResetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,22 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <Signup/>
+          </Protected>
+        ),
+      },
+      {
+        path: "/forgot-password",
+        element: (
+          <Protected authentication={false}>
+            <PasswordRecovery/>
+          </Protected>
+        ),
+      },
+      {
+        path: "/reset-password",
+        element: (
+          <Protected authentication={false}>
+            <ResetPassword/>
           </Protected>
         ),
       },
