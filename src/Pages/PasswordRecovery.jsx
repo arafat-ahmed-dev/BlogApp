@@ -11,7 +11,7 @@ const PasswordRecovery = () => {
         setMessage("")
         try {
             // Replace with the URL to redirect after password reset
-            const redirectUrl = 'http://localhost:5173/reset-password';
+            const redirectUrl = 'https://blog-app-aam.vercel.app/reset-password';
 
             await authService.recoverPassword({ email, redirectUrl });
             setMessage('Recovery email sent! Please check your inbox.');
