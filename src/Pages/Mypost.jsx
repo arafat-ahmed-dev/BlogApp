@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, PostCard } from "../Component";
 import appwriteService from "../AppWrite/config";
 import { useSelector } from "react-redux";
+import { CirclesWithBar } from 'react-loader-spinner'; 
 
 function MyPosts() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const authStatus = useSelector((state) => state.auth);
   const userPosts = posts.filter((post) => post.userId === authStatus.userData.userData.$id);
 
@@ -17,11 +19,31 @@ function MyPosts() {
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
+      } finally {
+        // Set a minimum loading time of 1 second
+        setTimeout(() => {
+          setLoading(false); // Set loading to false after 1 second
+        }, 1000);
       }
     };
 
     fetchPosts();
   }, []);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CirclesWithBar
+          height="100"
+          width="100"
+          color="#3498db"
+          ariaLabel="circles-with-bar-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      </div>
+    );
+  }
 
   if (!authStatus || userPosts.length === 0) {
     return (

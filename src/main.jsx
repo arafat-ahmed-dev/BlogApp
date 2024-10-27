@@ -13,6 +13,7 @@ import Post from "./Pages/Post.jsx";
 import Home from "./Pages/Home.jsx";
 import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
+import NotFound from "./Component/NotFound.jsx"
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "/post/:slug",
         element: <Post />,
+      },
+      {
+        path: "*", // Catch-all route for undefined paths
+        element: <NotFound />, // Render the NotFound component
       },
     ],
   },
