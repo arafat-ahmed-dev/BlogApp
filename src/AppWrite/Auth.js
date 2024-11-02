@@ -50,41 +50,6 @@ export class AuthService {
       throw error;
     }
   }
-<<<<<<< HEAD
-  // password recovery
-  async recoverPassword({ email, redirectUrl }) {
-    try {
-      const response = await this.account.createRecovery(email, redirectUrl);
-      return response;
-    } catch (error) {
-      console.error("Appwrite service :: recoverPassword :: error", error);
-      throw error;
-    }
-  }
-
-  async updatePassword({ userId, secret, password, confirmPassword }) {
-    try {
-      const response = await this.account.updateRecovery(
-        userId,
-        secret,
-        password,
-        confirmPassword
-      );
-      return response;
-    } catch (error) {
-      console.error("Appwrite service :: updatePassword :: error", error);
-      throw error;
-    }
-  }
-  async getCurrentUser() {
-    try {
-      return await this.account.get();
-    } catch (error) {
-      console.log("Appwrite service :: getCurrentUser() :: ", error);
-    }
-  }
-  async checkActiveSession() {
-=======
 
   async getCurrentUser() {
     try {
@@ -95,7 +60,6 @@ export class AuthService {
   }
   // add google oauth2
   async loginWithGoogle({redirectURI, loginURI}) {
->>>>>>> master
     try {
       const session = await this.account.createOAuth2Session(
         OAuthProvider.Google,
