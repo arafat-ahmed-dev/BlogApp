@@ -1,11 +1,12 @@
-import React,{useEffect, useState} from 'react'
-import appwriteService from "../AppWrite/config"
-import {Container, PostCard} from "../Component"
-import {useSelector} from "react-redux"
+import React, { useState, useEffect } from "react";
+import { Container, PostCard } from "../Component";
+import appwriteService from "../AppWrite/config";
+import { useSelector } from "react-redux";
 
-const Home = () => {
-  const authStatus = useSelector((state) => state.auth.status); // Get auth status from Redux
+function MyPosts() {
   const [posts, setPosts] = useState([]);
+  const authStatus = useSelector((state) => state.auth);
+  const userPosts = posts.filter((post) => post.userId === authStatus.userData.userData.$id);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,15 +22,15 @@ const Home = () => {
 
     fetchPosts();
   }, []);
-  
-  if (!authStatus || posts.length === 0) {
+
+  if (!authStatus || userPosts.length === 0) {
     return (
       <div className='w-full py-8 mt-4 text-center'>
         <Container>
           <div className='flex flex-wrap'>
             <div className='p-2 w-full'>
               <h1 className='text-3xl font-bold hover:text-gray-500'>
-                Login to read post
+              You haven't posted anything yet. <br /> Start sharing your thoughts!
               </h1>
             </div>
           </div>
@@ -38,12 +39,16 @@ const Home = () => {
     );
   }
 
+
   return (
-    <div className='w-full py-8'>
+    <div className="w-full py-8">
       <Container>
-        <div className='w-full flex flex-wrap justify-center'>
-          {posts.map((post) => (
-            <div key={post.$id} className='p-2 w-[305px] sm:w-[320px] md:max-w-[310px] flex flex-wrap'>
+        <div className="w-full flex flex-wrap justify-center">
+          {userPosts.map((post) => (
+            <div
+              key={post.$id}
+              className="p-2 w-[305px] sm:w-[320px] md:max-w-[310px] flex flex-wrap"
+            >
               <PostCard {...post} />
             </div>
           ))}
@@ -51,6 +56,6 @@ const Home = () => {
       </Container>
     </div>
   );
-};
+}
 
-export default Home
+export default MyPosts;

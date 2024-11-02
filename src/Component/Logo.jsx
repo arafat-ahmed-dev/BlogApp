@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import blog from '../assets/blog.svg';
 
-const Logo = ({width}) => {
+const Logo = ({ width = '50px' }) => {
   return (
-    <div>Logo</div>
-  )
-}
+    <div>
+      <img src={blog} alt="Blog Logo" style={{ width }} />
+    </div>
+  );
+};
 
-export default Logo
+export default Logo;

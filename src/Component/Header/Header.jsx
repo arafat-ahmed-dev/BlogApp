@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const authStatus = useSelector((state) => state.auth.status);
+  
   const navigate = useNavigate();
 
   const navItems = [
@@ -26,8 +27,8 @@ function Header() {
       active: !authStatus,
     },
     {
-      name: "All Posts",
-      slug: "/all-posts",
+      name: "My Posts",
+      slug: "/my-posts",
       active: authStatus,
     },
     {
@@ -42,11 +43,11 @@ function Header() {
   };
 
   return (
-    <header className="py-3 shadow bg-gray-500 w-full">
-      <Container>
-        <nav className="flex items-center justify-between w-full">
+    <header className="py-3 shadow bg-gray-500 w-full flex items-center justify-between h-[80px] lg:px-9 px-6">
+
+        <nav className="w-full overflow-hidden flex items-center justify-between">
           {/* Logo Section */}
-          <div className="mr-4">
+          <div className="mr-4 w-fit flex items-center">
             <Link to="/">
               <Logo />
             </Link>
@@ -68,7 +69,7 @@ function Header() {
 
           {/* Nav Items */}
           <ul
-            className={`fixed top-0 left-0 h-full md:flex md:justify-end w-1/2 bg-gray-700 p-4 z-40 transition-transform duration-300 ease-in-out transform ${
+            className={`fixed top-0 left-0 h-full md:flex gap-5 md:justify-end w-1/2 bg-gray-700 p-4 z-40 transition-transform duration-300 ease-in-out transform ${
               isMobileMenuOpen
                 ? "translate-x-0 "
                 : "-translate-x-full md:w-[50%]"
@@ -96,7 +97,6 @@ function Header() {
             )}
           </ul>
         </nav>
-      </Container>
     </header>
   );
 }

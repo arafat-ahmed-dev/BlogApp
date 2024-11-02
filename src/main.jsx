@@ -6,7 +6,7 @@ import store from "./store/store.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Protected, Login } from "./Component/index.js";
 import Signup from "./Pages/Signup.jsx";
-import AllPosts from "./Pages/Allpost.jsx"
+import MyPosts from "./Pages/Mypost.jsx";
 import AddPost from "./Pages/AddPost.jsx";
 import EditPost from "./Pages/EditPost.jsx";
 import Post from "./Pages/Post.jsx";
@@ -38,11 +38,11 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/all-posts",
+        path: "/my-posts",
         element: (
           <Protected authentication>
             {" "}
-            <AllPosts />
+            <MyPosts />
           </Protected>
         ),
       },
