@@ -1,4 +1,4 @@
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID ,OAuthProvider } from "appwrite";
 import conf from "../conf/conf.js";
 
 export class AuthService {
@@ -50,6 +50,7 @@ export class AuthService {
       throw error;
     }
   }
+<<<<<<< HEAD
   // password recovery
   async recoverPassword({ email, redirectUrl }) {
     try {
@@ -83,19 +84,47 @@ export class AuthService {
     }
   }
   async checkActiveSession() {
+=======
+
+  async getCurrentUser() {
     try {
-      const session = await this.account.getSession("current");
-      if (session) {
-        console.log("You are still logged in");
-        return true; // Return true if an active session exists
-      } else {
-        console.log("You are not logged in");
-        return false; // Return false if no active session exists
-      }
+      return await this.account.get();
     } catch (error) {
-      console.log("Error checking session:", error);
-      return false; // Return false if an error occurs
+      console.log("Appwrite service :: getCurrentUser() :: ", error);
     }
+  }
+  // add google oauth2
+  async loginWithGoogle({redirectURI, loginURI}) {
+>>>>>>> master
+    try {
+      const session = await this.account.createOAuth2Session(
+        OAuthProvider.Google,
+        redirectURI,
+        loginURI
+      );
+      return session;
+    } catch (error) {
+      console.log("Appwrite service :: loginWithGoogle() :: ", error);
+    }
+  }
+  async loginWithGoogle() {
+    const redirectURI = "http://localhost:5173";
+    const loginURI = "http://localhost:5173/login";
+    try {
+      const session = await this.account.createOAuth2Session(
+        OAuthProvider.Google,
+        redirectURI,
+        loginURI
+      );
+      return session;
+    } catch (error) {
+      this.handleError(error, 'loginWithGoogle');
+    }
+  }
+  
+  handleError(error, methodName) {
+    console.error(`Appwrite service :: ${methodName}() :: `, error);
+    // Optionally, you could throw the error or handle it according to your app's needs
   }
 }
 
