@@ -13,7 +13,8 @@ import Post from "./Pages/Post.jsx";
 import Home from "./Pages/Home.jsx";
 import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
-import NotFound from "./Component/NotFound.jsx"
+import NotFound from "./Component/NotFound.jsx";
+import Profile from "./Pages/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,15 @@ const router = createBrowserRouter([
           <Protected authentication>
             {" "}
             <MyPosts />
+          </Protected>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <Protected authentication>
+            {" "}
+            <Profile />
           </Protected>
         ),
       },

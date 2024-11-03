@@ -9,7 +9,6 @@ const Home = () => {
   const authStatus = useSelector((state) => state.auth.status); // Get auth status from Redux
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -62,6 +61,7 @@ const Home = () => {
       </div>
     );
   }
+  console.log(posts);
 
   return (
     <div className='w-full py-8'>

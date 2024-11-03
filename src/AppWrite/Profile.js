@@ -12,52 +12,16 @@ export class Service {
     this.bucket = new Storage(this.client);
   }
 
-  async getPost(slug) {
-    try {
-      return await this.databases.getDocument(
-        conf.databaseId,
-        conf.appCollectionId,
-        slug
-      );
-    } catch (error) {
-      console.log("Appwrite service :: getPost() :: ", error);
-      return false;
-    }
-  }
-
-  async getPosts(queries = [Query.equal("postStatus", "Active")]) {
-    try {
-      const response = await this.databases.listDocuments(
-        conf.databaseId,
-        conf.appCollectionId,
-        queries
-      );
-      return response;
-    } catch (error) {
-      console.log("Appwrite service :: getPosts() :: ", error);
-      return false;
-    }
-  }
-
-  async createPost({
-    title,
-    content,
-    slug,
-    featuredImage,
-    postStatus,
-    userId,
+  async createProfile({
+    image
   }) {
     try {
       return await this.databases.createDocument(
         conf.databaseId,
-        conf.appCollectionId,
-        slug,
+        conf.profileCollectionId,
+        ID.unique(),
         {
-          title,
-          content,
-          featuredImage,
-          postStatus,
-          userId,
+          image
         }
       );
     } catch (error) {
@@ -70,7 +34,7 @@ export class Service {
     try {
       return await this.databases.updateDocument(
         conf.databaseId,
-        conf.appCollectionId,
+        conf.profileCollectionId,
         slug,
         {
           title,
@@ -89,7 +53,7 @@ export class Service {
     try {
       await this.databases.deleteDocument(
         conf.databaseId,
-        conf.appCollectionId,
+        conf.profileCollectionId,
         slug
       );
       return true;
@@ -124,5 +88,5 @@ export class Service {
   }
 }
 
-const service = new Service();
-export default service;
+const profileService = new Service();
+export default profileService;

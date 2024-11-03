@@ -23,6 +23,8 @@ export default function PostForm({ post }) {
     const [postStatus, setPostStatus] = useState(post?.status || "Active");
 
     const submit = async (data) => {
+        console.log(data);
+        
         try {
             if (!userData.userData.$id) {
                 console.error("User ID is missing. Cannot proceed.");
