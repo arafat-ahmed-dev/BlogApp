@@ -46,7 +46,7 @@ const Home = () => {
     );
   }
 
-  if (!authStatus || posts.length === 0) {
+  if (!authStatus) {
     return (
       <div className='w-full py-8 mt-4 text-center'>
         <Container>
@@ -61,8 +61,19 @@ const Home = () => {
       </div>
     );
   }
-  console.log(posts);
-
+  if (posts.length === 0) {
+    return (
+      <div className='w-full py-8 mt-4 text-center min-h-[55vh] flex flex-wrap items-center justify-center '>
+        <Container>
+          <div>
+            <div className='p-2 w-full h-full'>
+              <Link to="/add-post" className='text-3xl font-bold'>No posts found</Link>
+            </div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
   return (
     <div className='w-full py-8'>
       <Container>

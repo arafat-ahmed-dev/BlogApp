@@ -10,7 +10,9 @@ console.log(featuredImage);
       <div className='w-full bg-gray-100/80 rounded-xl p-4 '>
         <div className='w-full justify-center mb-4'>
           <img src={appwriteService.getFilePreview(featuredImage)} alt={title}
-            className='rounded-xl w-[310px] h-[20vh]'/>
+            loading='lazy'
+            className='rounded-xl w-[310px] h-[20vh] object-cover'
+            />
         </div>
         <h2
           className='text-xl font-bold'
