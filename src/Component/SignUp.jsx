@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { Button, Input, Logo } from "./index";
 import { useForm } from "react-hook-form";
 import authService from "../AppWrite/Auth";
+// import { useAuth } from "../store/authSlice";
+import appwriteService from "../AppWrite/Profile";
 
 const SignUp = () => {
     const { register, handleSubmit } = useForm();
@@ -21,13 +23,32 @@ const SignUp = () => {
             if (userData) {
                 const currentUser = await authService.getCurrentUser();
                 if (currentUser) dispatch(login({ userData: currentUser }));
+                console.log(currentUser, "-------> currentUser");
+                const makeProfile = async () => {
+                    try {
+                        if (!currentUser) {
+                            console.error("User ID is missing. Cannot proceed.");
+                            return;
+                        }
+                        const profile = await appwriteService.createProfile({
+                            profileName: currentUser.name,
+                            email: currentUser.email,
+                            userId: currentUser.$id,
+                        });
+                        console.log(profile);
+                    } catch (error) {
+                        console.log("Appwrite service :: createProfile() :: ", error);
+                    }
+                };
+                makeProfile();
                 navigate("/");
             }
+            
         } catch (error) {
             setError(error.message);
         }
     };
-    
+
     return (
         <div className="flex items-center justify-center">
             <div
@@ -92,4 +113,4 @@ const SignUp = () => {
     );
 };
 
-export default SignUp
+export default SignUp;

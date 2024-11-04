@@ -13,7 +13,12 @@ export class Service {
   }
 
   async createProfile({
-    image
+    profileName,
+    bio,
+    imageprofileImage,
+    email,
+    userId,
+    Country,
   }) {
     try {
       return await this.databases.createDocument(
@@ -21,7 +26,12 @@ export class Service {
         conf.profileCollectionId,
         ID.unique(),
         {
-          image
+          profileName,
+          bio,
+          imageprofileImage,
+          email,
+          userId,
+          Country,
         }
       );
     } catch (error) {
@@ -30,41 +40,41 @@ export class Service {
     }
   }
 
-  async updatePost(slug, { title, content, featuredImage, postStatus }) {
+  async getProfile(userId) {
+    try {
+      const response = await this.databases.listDocuments(
+        conf.databaseId,
+        conf.profileCollectionId,
+        [Query.equal("userId", userId)]
+      );
+      return response;
+    } catch (error) {
+      console.error("Appwrite service :: getProfile() :: ", error);
+      return null;
+    }
+  }
+  async updateProflie(
+    userId,
+    { profileName, bio, email, imageprofileImage, Country }
+  ) {
     try {
       return await this.databases.updateDocument(
         conf.databaseId,
-        conf.profileCollectionId,
-        slug,
+        conf.appCollectionId,
+        userId,
         {
-          title,
-          content,
-          featuredImage,
-          postStatus,
+          profileName,
+          bio,
+          email,
+          imageprofileImage,
+          Country,
         }
       );
     } catch (error) {
-      console.log("Appwrite service :: updateDocument() :: ", error);
+      console.log("Appwrite service :: updateProfile() :: ", error);
       return false;
     }
   }
-
-  async deletePost(slug) {
-    try {
-      await this.databases.deleteDocument(
-        conf.databaseId,
-        conf.profileCollectionId,
-        slug
-      );
-      return true;
-    } catch (error) {
-      console.log("Appwrite service :: deleteDocument() :: ", error);
-      return false;
-    }
-  }
-
-  // storage service
-
   async uploadFile(file) {
     try {
       return await this.bucket.createFile(conf.bucketId, ID.unique(), file);
