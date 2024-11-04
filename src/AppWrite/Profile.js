@@ -15,7 +15,7 @@ export class Service {
   async createProfile({
     profileName,
     bio,
-    imageprofileImage,
+    profileImage,
     email,
     userId,
     Country,
@@ -24,11 +24,11 @@ export class Service {
       return await this.databases.createDocument(
         conf.databaseId,
         conf.profileCollectionId,
-        ID.unique(),
+        userId,
         {
           profileName,
           bio,
-          imageprofileImage,
+          profileImage,
           email,
           userId,
           Country,
@@ -55,18 +55,19 @@ export class Service {
   }
   async updateProflie(
     userId,
-    { profileName, bio, email, imageprofileImage, Country }
+    { profileName, bio, email, profileImage, Country }
   ) {
+    console.log({ userId, profileName, bio, email, profileImage, Country });
     try {
       return await this.databases.updateDocument(
         conf.databaseId,
-        conf.appCollectionId,
+        conf.profileCollectionId,
         userId,
         {
           profileName,
           bio,
           email,
-          imageprofileImage,
+          profileImage,
           Country,
         }
       );
@@ -75,9 +76,10 @@ export class Service {
       return false;
     }
   }
-  async uploadFile(file) {
+  
+  async uploadFile(file, userId) {
     try {
-      return await this.bucket.createFile(conf.bucketId, ID.unique(), file);
+      return await this.bucket.createFile(conf.bucketId, userId, file);
     } catch (error) {
       console.log("Appwrite service :: uploadFile() :: ", error);
       return false;
@@ -93,7 +95,7 @@ export class Service {
     }
   }
 
-   getFilePreview(fileId) {
+  getFilePreview(fileId) {
     return this.bucket.getFilePreview(conf.bucketId, fileId);
   }
 }
