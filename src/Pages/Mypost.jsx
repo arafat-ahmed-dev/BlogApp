@@ -8,8 +8,9 @@ function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const authStatus = useSelector((state) => state.auth);
-  const userPosts = posts.filter((post) => post.userId === authStatus.userData.userData.$id);
+  const userPosts = posts?.filter((post) => post.userId === authStatus.userData.userData.$id);
 
+  
   useEffect(() => {
     const fetchPosts = async () => {
       try {

@@ -6,39 +6,39 @@ import Footer from "./Component/Footer/Footer";
 import Header from "./Component/Header/Header";
 import { Outlet } from "react-router-dom";
 
-
 function App() {
-  const [loading, setLoading] = useState(true)
-  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    authService.getCurrentUser ()
-    .then((userData) => {
+    authService.getCurrentUser()
+      .then((userData) => {
         if (userData) {
-            dispatch(login({ userData }));
+          dispatch(login({ userData }));
         } else {
-            dispatch(logout());
+          dispatch(logout());
         }
-    })
-    .catch((error) => {
-        console.error("Error fetching user data:", error); // Log any errors
-        dispatch(logout()); // Optionally log out on error
-    })
-    .finally(() => setLoading(false));
-}, []);
-  
-  return !loading ? (
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        dispatch(logout());
+      })
+      .finally(() => setLoading(false));
+  }, [dispatch]);
+
+  if (loading) return <div>Loading...</div>; // Display a loading indicator
+
+  return (
     <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
-      <div className='w-full block'>
+      <div className='w-full'>
         <Header />
-      
         <main>
-        <Outlet />
+          <Outlet />
         </main>
         <Footer />
       </div>
     </div>
-  ) : null
+  );
 }
 
-export default App
+export default App;

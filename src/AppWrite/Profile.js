@@ -57,7 +57,6 @@ export class Service {
     userId,
     { profileName, bio, email, profileImage, Country }
   ) {
-    console.log({ userId, profileName, bio, email, profileImage, Country });
     try {
       return await this.databases.updateDocument(
         conf.databaseId,
