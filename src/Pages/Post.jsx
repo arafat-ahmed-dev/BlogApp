@@ -1,18 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import appwriteService from "../AppWrite/config";
 import { Button, Container } from "../Component";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Post() {
     const [post, setPost] = useState(null);
     const { slug } = useParams();
     const navigate = useNavigate();
-
     const userData = useSelector((state) => state.auth.userData);
-
     const isAuthor = post && userData ? post.userId === userData.userData.$id : false;
+
+    const location = useLocation();
+    // Check if the success message exists in location.state
+    const successMessage = location.state?.successMessage;
+
+    useEffect(() => {
+        if (successMessage) {
+            toast.success(` ${successMessage}`, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "dark",
+                progress: undefined,
+                transition: Zoom,
+            });
+        }
+    }, [successMessage]);
+
     useEffect(() => {
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
@@ -33,6 +54,7 @@ export default function Post() {
 
     return post ? (
         <div className="py-8">
+            <ToastContainer />
             <Container>
                 <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
                     <img
@@ -40,7 +62,6 @@ export default function Post() {
                         alt={post.title}
                         className="rounded-xl"
                     />
-
                     {isAuthor && (
                         <div className="absolute right-6 top-6">
                             <Link to={`/edit-post/${post.$id}`}>

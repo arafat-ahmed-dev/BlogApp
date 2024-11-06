@@ -17,13 +17,10 @@ const SignUp = () => {
     const create = async (data) => {
         setError("");
         try {
-            console.log(data, "-------> data");
             const userData = await authService.createAccount(data);
-            console.log(userData, "-------> userData");
             if (userData) {
                 const currentUser = await authService.getCurrentUser();
                 if (currentUser) dispatch(login({ userData: currentUser }));
-                console.log(currentUser, "-------> currentUser");
                 const makeProfile = async () => {
                     try {
                         if (!currentUser) {
@@ -35,7 +32,6 @@ const SignUp = () => {
                             email: currentUser.email,
                             userId: currentUser.$id,
                         });
-                        console.log(profile);
                     } catch (error) {
                         console.log("Appwrite service :: createProfile() :: ", error);
                     }

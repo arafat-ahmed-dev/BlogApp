@@ -18,7 +18,6 @@ const PasswordRecovery = () => {
             return;
         }
         try {
-            console.log(email); // Log the email for debugging
             const redirectUrl = conf.redirectLink ||"http://localhost:5173/reset-password";
             await authService.recoverPassword({ email, redirectUrl });
             setMessage("Recovery email sent! Please check your inbox.");
