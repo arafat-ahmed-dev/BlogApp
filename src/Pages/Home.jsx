@@ -4,16 +4,12 @@ import { Container, PostCard } from "../Component";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { CirclesWithBar } from 'react-loader-spinner';
-import { ToastContainer, toast, Zoom } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 const Home = () => {
   const authStatus = useSelector((state) => state.auth.status);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const [successMessage, setSuccessMessage] = useState(null);
-
+  
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -25,7 +21,6 @@ const Home = () => {
         console.error("Error fetching posts:", error);
       } finally {
         setTimeout(() => {
-          setSuccessMessage(location.state?.successMessage);
           setLoading(false);
         }, 1000);
       }
@@ -33,38 +28,6 @@ const Home = () => {
     fetchPosts();
   }, []);
 
-  // Show a notification for success messages from location.state (e.g., after logout)
-  useEffect(() => {
-    if (successMessage) {
-      toast(successMessage, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-        transition: Zoom,
-      });
-      setSuccessMessage(null); // Clear message after displaying
-    }
-  }, [successMessage]);
-
-  // Show a notification when logged in successfully
-  useEffect(() => {
-    if (authStatus) {
-      toast("Logged in successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-        transition: Zoom,
-      });
-    }
-  }, [authStatus]);
 
   if (loading) {
     return (
@@ -112,7 +75,6 @@ const Home = () => {
 
   return (
     <div className='w-full py-8'>
-      <ToastContainer />
       <Container>
         <div className='w-full flex flex-wrap justify-center'>
           {posts.map((post) => (

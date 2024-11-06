@@ -32,7 +32,7 @@ function MyPosts() {
   }, []);
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-[60vh]">
         <CirclesWithBar
           height="100"
           width="100"

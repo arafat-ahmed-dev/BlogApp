@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
-import { Button, Input, Logo } from "./index";
 import { useForm } from "react-hook-form";
 import authService from "../AppWrite/Auth";
 import google from '../assets/google.svg';
 import { Client, Account, OAuthProvider } from "appwrite";
+import { setNotification } from "../store/notification";
+import { Logo , Button, Input } from "./index";
 
 
 function Login() {
@@ -22,13 +23,15 @@ function Login() {
             if (session) {
                 const userData = await authService.getCurrentUser();
                 if (userData) dispatch(authLogin({ userData }));
-                setShowNotification(true);
-                navigate(`/`);
+                // Navigate to home with a success message for login
+                dispatch(setNotification("Logged in successfully!")); // Set success message
+                navigate("/");
             }
         } catch (error) {
             setError(error.message);
         }
     };
+
 
     const loginWithGoogle = async () => {
         const client = new Client()
