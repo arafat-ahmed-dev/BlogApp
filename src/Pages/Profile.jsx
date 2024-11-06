@@ -21,14 +21,17 @@ const Profile = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
+    // If the user is not logged in, redirect to the login page
     if (!status) {
       navigate("/login");
-    } else {
-      getProfile();
-      profileImagePreview();
-      setTimeout(() => setLoading(false), 2000);
+      return; // Early return to stop further execution
     }
-  }, [status, navigate]);
+
+    // Load profile data if logged in
+    getProfile();
+    profileImagePreview();
+    setTimeout(() => setLoading(false), 1000);
+  }, [status, navigate]); // Depend on status and navigate
 
   const getProfile = async () => {
     try {
