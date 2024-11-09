@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>,
+        element: <Home />,
       },
       {
         path: "/login",
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
         path: "/signup",
         element: (
           <Protected authentication={false}>
-            <Signup/>
+            <Signup />
           </Protected>
         ),
       },
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         path: "/forgot-password",
         element: (
           <Protected authentication={false}>
-            <PasswordRecovery/>
+            <PasswordRecovery />
           </Protected>
         ),
       },
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
         path: "/reset-password",
         element: (
           <Protected authentication={false}>
-            <ResetPassword/>
+            <ResetPassword />
           </Protected>
         ),
       },
@@ -106,6 +106,6 @@ const router = createBrowserRouter([
 ]);
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </Provider>
 );

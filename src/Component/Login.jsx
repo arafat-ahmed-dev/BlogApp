@@ -7,7 +7,7 @@ import authService from "../AppWrite/Auth";
 import google from '../assets/google.svg';
 import { Client, Account, OAuthProvider } from "appwrite";
 import { setNotification } from "../store/notification";
-import { Logo , Button, Input } from "./index";
+import { Logo, Button, Input } from "./index";
 
 
 function Login() {

@@ -6,16 +6,19 @@ import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CirclesWithBar } from 'react-loader-spinner';
+import Confirmation from "../Component/Confirmation";
 
 export default function Post() {
     const [post, setPost] = useState({});
+    const [showConfirm, setShowConfirm] = useState(false);
     const { slug } = useParams();
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
     const isAuthor = post && userData ? post.userId === userData.userData.$id : false;
-
+    const [loading, setLoading] = useState(true);
     const location = useLocation();
-    const successMessage = location.state?.successMessage;
+    const successMessage = location.state?.successMessage || "";
 
     useEffect(() => {
         if (successMessage) {
@@ -46,6 +49,10 @@ export default function Post() {
                     }
                 } catch (error) {
                     console.error("Error fetching post:", error);
+                } finally {
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 1000);
                 }
             };
             fetchPost();
@@ -54,7 +61,21 @@ export default function Post() {
         }
     }, [slug, navigate]);
 
-    const deletePost = async () => {
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-[80vh]">
+                <CirclesWithBar
+                    height="100"
+                    width="100"
+                    color="#3498db"
+                    ariaLabel="circles-with-bar-loading"
+                    visible={true}
+                />
+            </div>
+        );
+    }
+
+    const handleDelete = async () => {
         try {
             const status = await appwriteService.deletePost(post.$id);
             if (status) {
@@ -67,26 +88,36 @@ export default function Post() {
         }
     };
 
-    const filePreview = post?.featuredImage ? appwriteService.getFilePreview(post?.featuredImage) : "/default-image.jpg"; // Fallback image if no featuredImage
+    const filePreview = post?.featuredImage ? appwriteService.getFilePreview(post?.featuredImage) : "/default-image.jpg";
 
     return post ? (
         <div className="py-8">
             <ToastContainer />
+            {showConfirm && (
+                <Confirmation
+                    message="Delete Post"
+                    onConfirm={() => {
+                        handleDelete();
+                        setShowConfirm(false);
+                    }}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
             <Container>
                 <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
                     <img
-                        src={filePreview} // Use the preview or fallback image
+                        src={filePreview}
                         alt={post?.title}
                         className="rounded-xl"
                     />
                     {isAuthor && (
                         <div className="absolute right-6 top-6">
-                            <Link to={`/edit-post/${post.slug}`}> {/* Fixed the link */}
+                            <Link to={`/edit-post/${post.slug}`}>
                                 <Button bgColor="bg-green-500" className="mr-3">
                                     Edit
                                 </Button>
                             </Link>
-                            <Button bgColor="bg-red-500" onClick={deletePost}>
+                            <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)}>
                                 Delete
                             </Button>
                         </div>
@@ -96,7 +127,7 @@ export default function Post() {
                     <h1 className="text-2xl font-bold">{post?.title}</h1>
                 </div>
                 <div className="browser-css">
-                    {post?.content ? parse(post.content) : <p>No content available</p>} {/* Fallback content */}
+                    {post?.content ? parse(post.content) : <p>No content available</p>}
                 </div>
             </Container>
         </div>
