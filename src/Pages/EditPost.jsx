@@ -3,15 +3,12 @@ import { Container, PostForm } from "../Component"
 import appwriteService from "../AppWrite/config"
 import { useNavigate, useParams } from 'react-router-dom'
 import { CirclesWithBar } from 'react-loader-spinner';
-import { useSelector } from 'react-redux';
 
 function EditPost() {
     const [post, setPosts] = useState(null)
     const [loading, setLoading] = useState(true)
     const { slug } = useParams()
     const navigate = useNavigate()
-    const data = useSelector((state)=> state.auth)
-    
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -25,9 +22,8 @@ function EditPost() {
                 } catch (error) {
                     console.error("Error fetching post:", error);
                 } finally {
-                    // Set a minimum loading time of 1 second
                     setTimeout(() => {
-                        setLoading(false); // Set loading to false after 1 second
+                        setLoading(false);
                     }, 1000);
                 }
             } else {

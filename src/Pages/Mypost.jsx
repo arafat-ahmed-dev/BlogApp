@@ -66,7 +66,7 @@ function MyPosts() {
   return (
     <div className="w-full py-8">
       <Container>
-        <div className="w-full flex flex-wrap justify-center">
+        <div className="w-full flex flex-wrap justify-center gap-5">
           {userPosts.map((post) => (
             <div
               key={post.$id}
