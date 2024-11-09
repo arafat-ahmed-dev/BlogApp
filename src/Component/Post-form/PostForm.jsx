@@ -12,7 +12,7 @@ export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || "",
-            slug: post?.$id || "",
+            slug: post?.slug || "",
             content: post?.content || "",
             postStatus: post?.status || "Active",
         },
@@ -22,7 +22,7 @@ export default function PostForm({ post }) {
     const userData = useSelector((state) => state.auth.userData);
     const [postStatus, setPostStatus] = useState(post?.status || "Active");
 
-   
+
     const submit = async (data) => {
         try {
             if (!userData.userData.$id) {
@@ -47,7 +47,7 @@ export default function PostForm({ post }) {
                 });
                 if (updatedPost) {
                     setPostStatus(data.status); // Update local status
-                    navigate(`/post/${updatedPost.$id}`, { state: { successMessage: "Post updated successfully!" } });
+                    navigate(`/post/${updatedPost.slug}`, { state: { successMessage: "Post updated successfully!" } });
                 }
             } else {
                 if (file) {
@@ -58,7 +58,7 @@ export default function PostForm({ post }) {
                     userId: userData.userData.$id,
                 });
                 if (newPost) {
-                    navigate(`/post/${newPost.$id}`, { state: { successMessage: "Post created successfully!" } });
+                    navigate(`/post/${newPost.slug}`, { state: { successMessage: "Post created successfully!" } });
                 }
             }
         } catch (error) {

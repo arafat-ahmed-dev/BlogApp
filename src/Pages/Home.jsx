@@ -9,13 +9,14 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await appwriteService.getPosts([]);
         if (response) {
-          setPosts(response.documents);
+          const activePosts = response.documents.filter(post => post.postStatus === 'Active');
+          setPosts(activePosts);
         }
       } catch (error) {
         console.error("Error fetching posts:", error);

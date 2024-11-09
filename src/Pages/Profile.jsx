@@ -5,6 +5,7 @@ import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
 import { ToastContainer, toast, Zoom } from 'react-toastify'; // Importing ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Importing CSS
+import { LogoutBtn } from "../Component";
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
@@ -195,12 +196,19 @@ const Profile = () => {
               </button>
             </div>
           ) : (
-            <button
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
+            <div className="flex items-center gap-4 justify-center">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+              >
+                <LogoutBtn />
+              </button>
+            </div>
           )}
         </div>
       </div>
