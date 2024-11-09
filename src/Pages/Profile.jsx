@@ -5,6 +5,7 @@ import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
 import { ToastContainer, toast, Zoom } from 'react-toastify'; // Importing ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Importing CSS
+import { LogoutBtn } from "../Component";
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
@@ -21,14 +22,17 @@ const Profile = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
+    // If the user is not logged in, redirect to the login page
     if (!status) {
       navigate("/login");
-    } else {
-      getProfile();
-      profileImagePreview();
-      setTimeout(() => setLoading(false), 2000);
+      return; // Early return to stop further execution
     }
-  }, [status, navigate]);
+
+    // Load profile data if logged in
+    getProfile();
+    profileImagePreview();
+    setTimeout(() => setLoading(false), 1000);
+  }, [status, navigate]); // Depend on status and navigate
 
   const getProfile = async () => {
     try {
@@ -192,12 +196,19 @@ const Profile = () => {
               </button>
             </div>
           ) : (
-            <button
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
+            <div className="flex items-center gap-4 justify-center">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+              >
+                <LogoutBtn />
+              </button>
+            </div>
           )}
         </div>
       </div>

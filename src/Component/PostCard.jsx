@@ -2,10 +2,10 @@ import React from "react";
 import appwriteService from "../AppWrite/config";
 import { Link } from "react-router-dom";
 
-function PostCard({ $id, title, featuredImage }) {
+function PostCard({ slug, title, featuredImage }) {
 
   return (
-    <Link to={`/post/${$id}`}>
+    <Link to={`/post/${slug}`}>
       <div className='w-full bg-gray-100/80 rounded-xl p-4 '>
         <div className='w-full justify-center mb-4'>
           <img src={appwriteService.getFilePreview(featuredImage)} alt={title}
@@ -14,7 +14,7 @@ function PostCard({ $id, title, featuredImage }) {
             />
         </div>
         <h2
-          className='text-xl font-bold'
+          className='font-semibold text-[18px] md:text-[20px]'
         >
         {title}
         </h2>

@@ -12,25 +12,12 @@ export class Service {
     this.bucket = new Storage(this.client);
   }
 
-  async getPost(slug) {
-    try {
-      return await this.databases.getDocument(
-        conf.databaseId,
-        conf.appCollectionId,
-        slug
-      );
-    } catch (error) {
-      console.log("Appwrite service :: getPost() :: ", error);
-      return false;
-    }
-  }
 
-  async getPosts(queries = [Query.equal("postStatus", "Active")]) {
+  async getPosts() {
     try {
       const response = await this.databases.listDocuments(
         conf.databaseId,
-        conf.appCollectionId,
-        queries
+        conf.appCollectionId
       );
       return response;
     } catch (error) {
@@ -48,18 +35,21 @@ export class Service {
     userId,
   }) {
     try {
-      return await this.databases.createDocument(
+      const response = await this.databases.createDocument(
         conf.databaseId,
         conf.appCollectionId,
-        slug,
+        ID.unique(),
         {
           title,
           content,
           featuredImage,
           postStatus,
           userId,
+          slug,
         }
       );
+      console.log(response);
+      return response;
     } catch (error) {
       console.log("Appwrite service :: createPost() :: ", error);
       return false;
@@ -68,13 +58,19 @@ export class Service {
 
   async updatePost(slug, { title, content, featuredImage, postStatus }) {
     try {
+      // Ensure 'content' is a valid string and truncate it to 1000 characters if needed
+      if (content && content.length > 1000) {
+        content = content.substring(0, 1000); // Truncate content to 1000 characters
+      }
+
+      // Proceed with updating the document
       return await this.databases.updateDocument(
         conf.databaseId,
         conf.appCollectionId,
-        slug,
+        slug, // Assuming slug is the documentId
         {
           title,
-          content,
+          content, // Updated content
           featuredImage,
           postStatus,
         }
@@ -119,7 +115,7 @@ export class Service {
     }
   }
 
-   getFilePreview(fileId) {
+  getFilePreview(fileId) {
     return this.bucket.getFilePreview(conf.bucketId, fileId);
   }
 }
