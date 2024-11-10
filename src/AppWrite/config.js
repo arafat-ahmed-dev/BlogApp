@@ -12,7 +12,6 @@ export class Service {
     this.bucket = new Storage(this.client);
   }
 
-
   async getPosts() {
     try {
       const response = await this.databases.listDocuments(
@@ -46,6 +45,8 @@ export class Service {
           postStatus,
           userId,
           slug,
+          likes: 0, // Initialize likes count
+          comments: [], // Initialize empty comments array
         }
       );
       console.log(response);
@@ -96,7 +97,6 @@ export class Service {
   }
 
   // storage service
-
   async uploadFile(file) {
     try {
       return await this.bucket.createFile(conf.bucketId, ID.unique(), file);
@@ -108,15 +108,55 @@ export class Service {
 
   async deleteFile(fileId) {
     try {
-      return await this.bucket.deleteFile(conf.bucketId, fileId);
+      await this.bucket.deleteFile(conf.bucketId, fileId);
+      return true;
     } catch (error) {
       console.log("Appwrite service :: deleteFile() :: ", error);
       return false;
     }
   }
 
+  async updatePostLikes(postId, likes) {
+    try {
+      const response = await this.databases.updateDocument(
+        conf.databaseId,
+        conf.appCollectionId,
+        postId,
+        {
+          likes,
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error("Error updating post likes:", error);
+      throw error;
+    }
+  }
+
+  async updatePostComments(postId, comments) {
+    try {
+      const response = await this.databases.updateDocument(
+        conf.databaseId,
+        conf.appCollectionId,
+        postId,
+        {
+          comments,
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error("Error updating post comments:", error);
+      throw error;
+    }
+  }
+
   getFilePreview(fileId) {
-    return this.bucket.getFilePreview(conf.bucketId, fileId);
+    try {
+      return this.bucket.getFilePreview(conf.bucketId, fileId);
+    } catch (error) {
+      console.error("Error getting file preview:", error);
+      return null;
+    }
   }
 }
 
