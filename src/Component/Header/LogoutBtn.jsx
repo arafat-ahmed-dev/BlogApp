@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import authService from "../../AppWrite/Auth";
 import { logout } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import { setNotification, clearNotification } from "../../store/notification";
 import Confirmation from "../Confirmation";
 
 function LogoutBtn() {
@@ -17,20 +16,11 @@ function LogoutBtn() {
       .logout()
       .then(() => {
         dispatch(logout());
-        dispatch(setNotification("Logged out successfully!"));
         navigate("/");
-
-        // Clear notification after 3 seconds
-        setTimeout(() => {
-          dispatch(clearNotification());
-        }, 3000);
       })
       .catch((error) => {
+        alert("Logout failed. Please try again.");
         console.error("Logout failed:", error);
-        dispatch(setNotification("Logout failed. Please try again."));
-        setTimeout(() => {
-          dispatch(clearNotification());
-        }, 3000);
       });
   };
 

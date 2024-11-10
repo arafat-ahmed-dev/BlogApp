@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import authService from "../AppWrite/Auth";
-import google from '../assets/google.svg';
-import { Client, Account, OAuthProvider } from "appwrite";
-import { setNotification } from "../store/notification";
+import { setNotification, clearNotification } from "../store/notification";
 import { Logo, Button, Input } from "./index";
-
 
 function Login() {
     const navigate = useNavigate();
@@ -23,36 +20,13 @@ function Login() {
             if (session) {
                 const userData = await authService.getCurrentUser();
                 if (userData) dispatch(authLogin({ userData }));
-                // Navigate to home with a success message for login
-                dispatch(setNotification("Logged in successfully!")); // Set success message
+                dispatch(setNotification("Logged in successfully!"));
                 navigate("/");
             }
         } catch (error) {
             setError(error.message);
         }
     };
-
-
-    const loginWithGoogle = async () => {
-        const client = new Client()
-            .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
-            .setProject('671640a70022df1c9f08');         // Your project ID
-
-        const account = new Account(client);
-
-        // Go to OAuth provider login page
-        const session = await account.createOAuth2Session(
-            OAuthProvider.Google, // provider
-            'http://localhost:5173', // redirect here on failure
-            'http://localhost:5173/login', // redirect here on success
-        );
-        if (session) {
-            const userData = await authService.getCurrentUser();
-            if (userData) dispatch(authLogin({ userData }));
-            navigate("/");
-        }
-    };
-
     return (
         <div className="flex items-center justify-center w-full my-5">
             <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
@@ -93,15 +67,6 @@ function Login() {
                 </form>
                 <p className="text-blue-700 font-semibold cursor-pointer pt-3 pl-2"
                     onClick={() => navigate("/forgot-password")}>Forget Password?</p>
-                <div className="flex justify-center space-x-4 flex-col items-center w-full">
-                    <p className="text-center w-full font-serif">Or</p>
-                    <img
-                        className="text-white font-bold w-[30px] rounded cursor-pointer"
-                        onClick={loginWithGoogle}
-                        src={google}
-                        alt="Google Login"
-                    />
-                </div>
             </div>
         </div>
     );
