@@ -13,12 +13,12 @@ function Login() {
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const [error, setError] = useState("")
-    
+
     // Accessing the auth status from the Redux store
     const authStatus = useSelector((state) => state.auth.status);
     const userData = useSelector((state) => state.auth.userData);
     console.log(authStatus, userData);
-    
+
     const login = async (data) => {
         setError("")
         try {
@@ -35,23 +35,24 @@ function Login() {
 
 
     const loginWithGoogle = async () => {
-    const client = new Client()
-        .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
-        .setProject('671640a70022df1c9f08');                 // Your project ID
+        const client = new Client()
+            .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
+            .setProject('671640a70022df1c9f08'); // Your project ID
 
-    const account = new Account(client);
+        const account = new Account(client);
 
-    // Go to OAuth provider login page
-    const session = await account.createOAuth2Session(
-        OAuthProvider.Google, // provider
-        'http://localhost:5173', // redirect here on failure
-        'http://localhost:5173/login', // redirect here on success
-    );
-    if (session) {
-        const userData = await authService.getCurrentUser()
-        if (userData) dispatch(authLogin({ userData }))
-        navigate("/")
-    }}
+        // Go to OAuth provider login page
+        const session = await account.createOAuth2Session(
+            OAuthProvider.Google, // provider
+            'http://localhost:5173', // redirect here on failure
+            'http://localhost:5173/login', // redirect here on success
+        );
+        if (session) {
+            const userData = await authService.getCurrentUser()
+            if (userData) dispatch(authLogin({ userData }))
+            navigate("/")
+        }
+    }
     return (
         <div className="flex items-center justify-center w-full my-5">
             <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
