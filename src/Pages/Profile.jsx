@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
+import { ToastContainer, toast, Zoom } from 'react-toastify'; // Importing ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Importing CSS
+import { LogoutBtn } from "../Component";
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
@@ -16,18 +19,20 @@ const Profile = () => {
     Country: "",
     profilePictureUrl: "",
   });
-  const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
+    // If the user is not logged in, redirect to the login page
     if (!status) {
       navigate("/login");
-    } else {
-      getProfile();
-      profileImagePreview();
-      setTimeout(() => setLoading(false), 2000);
+      return; // Early return to stop further execution
     }
-  }, [status, navigate]);
+
+    // Load profile data if logged in
+    getProfile();
+    profileImagePreview();
+    setTimeout(() => setLoading(false), 1000);
+  }, [status, navigate]); // Depend on status and navigate
 
   const getProfile = async () => {
     try {
@@ -66,30 +71,36 @@ const Profile = () => {
         alert("File size should not exceed 2MB.");
         return;
       }
-      setSelectedImage(file);
       setPreviewUrl(URL.createObjectURL(file));
-      //if in the appwrite already exist the same id picture then delete the previous one
-
       await profileService.deleteFile(userData.userData.$id);
       await profileService.uploadFile(file, userData.userData.$id);
-
     }
   };
 
   const profileImagePreview = () => {
-    try{
+    try {
       const response = profileService.getFilePreview(userData.userData.$id);
       setPreviewUrl(response);
-      console.log(response);
-    }catch{
+    } catch {
       console.log("Error");
     }
-  }
+  };
+
   const handleSave = async () => {
     const id = userData.userData.$id;
     try {
       const response = await profileService.updateProflie(id, { ...formData });
       setProfileData(response);
+      toast('✅ Profile Updated Successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+        transition: Zoom,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -113,6 +124,7 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[70vh]">
+      <ToastContainer /> {/* Only add ToastContainer once in the root component */}
       <div className="max-w-md w-full bg-gray-100/80 shadow-lg rounded-lg overflow-hidden p-6">
         <div className="text-center">
           <img
@@ -169,7 +181,7 @@ const Profile = () => {
 
         <div className="mt-6 flex justify-center pt-5">
           {isEditing ? (
-            <>
+            <div>
               <button
                 className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-300 mr-2"
                 onClick={handleSave}
@@ -182,14 +194,21 @@ const Profile = () => {
               >
                 Cancel
               </button>
-            </>
+            </div>
           ) : (
-            <button
-              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
+            <div className="flex items-center gap-4 justify-center">
+              <button
+                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+              <button
+                className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+              >
+                <LogoutBtn />
+              </button>
+            </div>
           )}
         </div>
       </div>

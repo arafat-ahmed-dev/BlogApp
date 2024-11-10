@@ -22,6 +22,7 @@ function RTE({
             init={{
                 branding: false,
                 height: 500,
+                min_height: 500,
                 menubar: true,
                 plugins: [
                     "advlist",

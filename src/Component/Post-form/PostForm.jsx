@@ -12,7 +12,7 @@ export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || "",
-            slug: post?.$id || "",
+            slug: post?.slug || "",
             content: post?.content || "",
             postStatus: post?.status || "Active",
         },
@@ -22,9 +22,8 @@ export default function PostForm({ post }) {
     const userData = useSelector((state) => state.auth.userData);
     const [postStatus, setPostStatus] = useState(post?.status || "Active");
 
+
     const submit = async (data) => {
-        console.log(data);
-        
         try {
             if (!userData.userData.$id) {
                 console.error("User ID is missing. Cannot proceed.");
@@ -39,18 +38,16 @@ export default function PostForm({ post }) {
                 if (file && post.featuredImage) {
                     await appwriteService.deleteFile(post.featuredImage);
                 }
-                
+
                 const updatedPost = await appwriteService.updatePost(post.$id, {
                     ...data,
                     featuredImage: file ? file.$id : post.featuredImage,
                     userId: userData.$id,
                     postStatus: data.status,
                 });
-                if(updatedPost){
-                setPostStatus(data.status); // Update local status
-                }
                 if (updatedPost) {
-                    navigate(`/post/${updatedPost.$id}`);
+                    setPostStatus(data.status); // Update local status
+                    navigate(`/post/${updatedPost.slug}`, { state: { successMessage: "Post updated successfully!" } });
                 }
             } else {
                 if (file) {
@@ -61,7 +58,7 @@ export default function PostForm({ post }) {
                     userId: userData.userData.$id,
                 });
                 if (newPost) {
-                    navigate(`/post/${newPost.$id}`);
+                    navigate(`/post/${newPost.slug}`, { state: { successMessage: "Post created successfully!" } });
                 }
             }
         } catch (error) {
@@ -69,6 +66,7 @@ export default function PostForm({ post }) {
             alert("There was an error submitting your post. Please try again.");
         }
     };
+
 
     const slugTransform = useCallback((value) => {
         if (value && typeof value === "string")

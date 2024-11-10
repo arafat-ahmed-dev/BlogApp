@@ -14,25 +14,25 @@ function EditPost() {
         const fetchPost = async () => {
             if (slug) {
                 try {
-                    const fetchedPost = await appwriteService.getPost(slug);
-                    if (fetchedPost) {
-                        setPosts(fetchedPost);
+                    const response = await appwriteService.getPosts();
+                    const foundPost = response.documents.find((post) => post.slug === slug);
+                    if (foundPost) {
+                        setPosts(foundPost);
                     }
                 } catch (error) {
                     console.error("Error fetching post:", error);
                 } finally {
-                    // Set a minimum loading time of 1 second
                     setTimeout(() => {
-                        setLoading(false); // Set loading to false after 1 second
+                        setLoading(false);
                     }, 1000);
                 }
             } else {
                 navigate('/');
             }
         };
-
         fetchPost();
     }, [slug, navigate]);
+    
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[80vh]">

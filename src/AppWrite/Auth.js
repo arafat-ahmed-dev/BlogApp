@@ -12,7 +12,12 @@ export class AuthService {
 
   async createAccount({ email, password, name }) {
     try {
-      const userAccount = await this.account.create(ID.unique(), email, password, name);
+      const userAccount = await this.account.create(
+        ID.unique(),
+        email,
+        password,
+        name
+      );
 
       if (userAccount) {
         // Call login to create a session after account creation
@@ -28,8 +33,15 @@ export class AuthService {
 
   async login({ email, password }) {
     try {
-      const session = await this.account.createEmailPasswordSession(email, password);
-      return session;
+      const session = await this.account.createEmailPasswordSession(
+        email,
+        password
+      );
+      if (session) {
+        // Store session in localStorage
+        localStorage.setItem("session", JSON.stringify(session));
+        return session;
+      }
     } catch (error) {
       console.error("Appwrite service :: login :: error", error);
       throw error;
@@ -39,7 +51,8 @@ export class AuthService {
   async logout() {
     try {
       await this.account.deleteSessions();
-      console.log("Logged out successfully.");
+      // Remove session from localStorage
+      localStorage.removeItem("session");
     } catch (error) {
       console.error("Appwrite service :: logout :: error", error);
       throw error;
@@ -58,7 +71,12 @@ export class AuthService {
 
   async updatePassword({ userId, secret, password, confirmPassword }) {
     try {
-      const response = await this.account.updateRecovery(userId, secret, password, confirmPassword);
+      const response = await this.account.updateRecovery(
+        userId,
+        secret,
+        password,
+        confirmPassword
+      );
       return response;
     } catch (error) {
       console.error("Appwrite service :: updatePassword :: error", error);
@@ -68,9 +86,21 @@ export class AuthService {
 
   async getCurrentUser() {
     try {
-      return await this.account.get();
+      // Check if the session is still valid
+      const session = await this.getSessionFromStorage();
+      if (session) {
+        // If session is valid, return the user details
+        return await this.account.get();
+      } else {
+        console.log("User is not logged in.");
+        return null;
+      }
     } catch (error) {
-      console.log("Appwrite service :: getCurrentUser :: error", error);
+      if (error.message.includes("missing scope")) {
+        console.log("User is not logged in or lacks necessary permissions.");
+      } else {
+        console.log("Appwrite service :: getCurrentUser :: error", error);
+      }
       return null; // Return null for easier handling in UI components
     }
   }
@@ -90,8 +120,23 @@ export class AuthService {
       return false;
     }
   }
+
+  // Helper method to get session from localStorage
+  async getSessionFromStorage() {
+    const session = JSON.parse(localStorage.getItem("session"));
+    if (session) {
+      return session;
+    }
+    return null;
+  }
+
+  // Optional: Redirect to login page if user is not logged in
+  redirectToLogin() {
+    // This can be a place where you handle UI redirects
+    // Example: window.location.href = '/login';
+    console.log("Redirecting to login...");
+  }
 }
 
 const authService = new AuthService();
 export default authService;
-  

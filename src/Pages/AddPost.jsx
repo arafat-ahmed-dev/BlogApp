@@ -16,7 +16,7 @@ const AddPost = () => {
     <div className='py-8'>
       <Container>
         {loading ? (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center h-[60vh">
             <CirclesWithBar 
               height="80" 
               width="80" 
