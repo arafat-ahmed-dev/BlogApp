@@ -20,6 +20,7 @@ export class Service {
     userId,
     Country,
   }) {
+    console.log(profileName,bio,profileImage,email,userId,Country)
     try {
       return await this.databases.createDocument(
         conf.databaseId,

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
-import { ToastContainer, toast, Zoom } from 'react-toastify'; // Importing ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Importing CSS
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { LogoutBtn } from "../Component";
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const { slug } = useParams();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -21,33 +22,35 @@ const Profile = () => {
   });
   const [previewUrl, setPreviewUrl] = useState(null);
 
-  useEffect(() => {
-    // If the user is not logged in, redirect to the login page
-    if (!status) {
-      navigate("/login");
-      return; // Early return to stop further execution
-    }
+  const isOwnProfile = !slug || (userData?.userData?.$id === slug);
 
-    // Load profile data if logged in
+  useEffect(() => {
+    if (!status && !slug) {
+      navigate("/login");
+      return;
+    }
     getProfile();
     profileImagePreview();
     setTimeout(() => setLoading(false), 1000);
-  }, [status, navigate]); // Depend on status and navigate
+  }, [status, navigate, slug]);
 
   const getProfile = async () => {
     try {
-      const response = await profileService.getProfile(userData.userData.$id);
+      const userId = slug || userData?.userData?.$id;
+      const response = await profileService.getProfile(userId);
       const profile = response.documents[0];
       setProfileData(profile);
-      setFormData({
-        profileName: profile.profileName || "",
-        bio: profile.bio || "",
-        Country: profile.Country || "",
-        email: profile.email || "",
-        profilePictureUrl: profile.profilePictureUrl || "",
-      });
+      if (isOwnProfile) {
+        setFormData({
+          profileName: profile.profileName || "",
+          bio: profile.bio || "",
+          Country: profile.Country || "",
+          email: profile.email || "",
+          profilePictureUrl: profile.profilePictureUrl || "",
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching profile:", error);
     }
   };
 
@@ -79,10 +82,11 @@ const Profile = () => {
 
   const profileImagePreview = () => {
     try {
-      const response = profileService.getFilePreview(userData.userData.$id);
+      const userId = slug || userData?.userData?.$id;
+      const response = profileService.getFilePreview(userId);
       setPreviewUrl(response);
     } catch {
-      console.log("Error");
+      console.log("Error fetching image preview");
     }
   };
 
@@ -102,7 +106,7 @@ const Profile = () => {
         transition: Zoom,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error saving profile:", error);
     } finally {
       setIsEditing(false);
     }
@@ -124,7 +128,7 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[70vh]">
-      <ToastContainer /> {/* Only add ToastContainer once in the root component */}
+      <ToastContainer />
       <div className="max-w-md w-full bg-gray-100/80 shadow-lg rounded-lg overflow-hidden p-6">
         <div className="text-center">
           <img
@@ -132,7 +136,7 @@ const Profile = () => {
             src={previewUrl || "https://via.placeholder.com/150"}
             alt="User Profile"
           />
-          {isEditing ? (
+          {isEditing && isOwnProfile ? (
             <div>
               <input
                 type="file"
@@ -180,7 +184,7 @@ const Profile = () => {
         </div>
 
         <div className="mt-6 flex justify-center pt-5">
-          {isEditing ? (
+          {isEditing && isOwnProfile ? (
             <div>
               <button
                 className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-300 mr-2"
@@ -197,17 +201,21 @@ const Profile = () => {
             </div>
           ) : (
             <div className="flex items-center gap-4 justify-center">
-              <button
-                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Profile
-              </button>
-              <button
-                className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
-              >
-                <LogoutBtn />
-              </button>
+              {isOwnProfile && (
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                  onClick={() => setIsEditing(true)}
+                >
+                  Edit Profile
+                </button>
+              )}
+              {isOwnProfile && (
+                <button
+                  className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+                >
+                  <LogoutBtn />
+                </button>
+              )}
             </div>
           )}
         </div>

@@ -1,9 +1,8 @@
-// src/components/ResetPassword.js
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import authService from "../AppWrite/Auth"; // Ensure the path is correct
+import { useSearchParams, Link } from 'react-router-dom';
+import authService from "../AppWrite/Auth";
 import { useForm } from "react-hook-form";
-import { Button, Input, Logo } from "../Component/index"; // Ensure these components exist
+import { Button, Input, Logo } from "../Component/index";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,7 +16,6 @@ const ResetPassword = () => {
     const handleResetPassword = async (data) => {
         setMessage('');
 
-        // Check if passwords match
         if (data.password !== data.confirmPassword) {
             setMessage("Passwords don't match.");
             return;
@@ -26,16 +24,14 @@ const ResetPassword = () => {
         try {
             const userId = searchParams.get('userId');
             const secret = searchParams.get('secret');
-            const password = data.password; // Accessing the password from data
-            const confirmPassword = data.password; // Accessing the password from data
+            const password = data.password;
+            const confirmPassword = data.password;
 
-            // Ensure userId and secret are not null
             if (!userId || !secret) {
                 setMessage("Invalid or missing userId/secret.");
                 return;
             }
 
-            // Call updatePassword with necessary parameters
             await authService.updatePassword({
                 userId,
                 secret,
@@ -45,8 +41,8 @@ const ResetPassword = () => {
             
             setMessage('Password updated successfully!');
         } catch (error) {
-            console.error("Error updating password:", error); // Log the error for debugging
-            setMessage(error.message || 'Failed to update password.'); // Provide a fallback error message
+            console.error("Error updating password:", error);
+            setMessage(error.message || 'Failed to update password.');
         }
     };
 
@@ -59,52 +55,74 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="flex items-center justify-center w-full my-5">
-            <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
-                <div className="mb-2 flex justify-center">
-                    <span className="inline-block w-full max-w-[100px]">
-                        <Logo width="100%" />
-                    </span>
+        <div className="flex min-h-screen items-center justify-center bg-gray-450">
+            <div className="flex flex-col md:flex-row max-w-4xl bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+                {/* Left Section */}
+                <div className="p-10 text-white w-full md:w-1/2 flex flex-col items-center justify-center bg-[url('https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] bg-cover bg-center bg-no-repeat">
+                    <Logo width="80px" />
+                    <h2 className="mt-4 text-2xl font-bold text-center">Reset Your Password</h2>
+                    <p className="mt-2 text-gray-400">Create a strong new password to secure your account.</p>
                 </div>
-                <h2 className="text-center text-2xl font-bold leading-tight">Reset your Password</h2>
-                {message && <p className="text-red-600 mt-8 text-center">{message}</p>}
-                <form onSubmit={handleSubmit(handleResetPassword)} className="mt-8">
-                    <div className="space-y-5">
+
+                {/* Right Reset Form Section */}
+                <div className="p-10 w-full md:w-1/2 bg-gray-800">
+                    <h2 className="text-2xl font-bold text-center text-white mb-6">Create New Password</h2>
+
+                    {message && (
+                        <p className={`text-center p-2 rounded mb-4 ${
+                            message.includes('successfully') ? 'text-green-500' : 'text-red-500'
+                        }`}>
+                            {message}
+                        </p>
+                    )}
+
+                    <form onSubmit={handleSubmit(handleResetPassword)} className="space-y-4 text-white">
                         <div className="relative">
                             <Input
-                                label="Password : "
+                                label="New Password"
                                 type={showPassword ? "text" : "password"}
-                                placeholder="Password"
+                                placeholder="Enter new password"
                                 {...register("password", { required: true })}
                             />
                             <button
                                 type="button"
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
                                 onClick={togglePasswordVisibility}
                             >
                                 <FontAwesomeIcon className='mt-7' icon={showPassword ? faEye : faEyeSlash} />
                             </button>
                         </div>
+
                         <div className="relative">
                             <Input
-                                label="Confirm Password : "
+                                label="Confirm Password"
                                 type={showConfirmPassword ? "text" : "password"}
-                                placeholder="Confirm Password"
+                                placeholder="Confirm new password"
                                 {...register("confirmPassword", { required: true })}
                             />
                             <button
                                 type="button"
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
                                 onClick={toggleConfirmPasswordVisibility}
                             >
                                 <FontAwesomeIcon className='mt-7' icon={showConfirmPassword ? faEye : faEyeSlash} />
                             </button>
                         </div>
-                        <Button type="submit" className="w-full">
+
+                        <Button type="submit" className="w-full bg-yellow-500 text-black font-bold py-2 rounded-md">
                             Reset Password
                         </Button>
+                    </form>
+
+                    <div className="mt-6 text-center text-gray-400">
+                        <p>
+                            Remember your password?{" "}
+                            <Link to="/login" className="text-yellow-500 font-medium hover:underline">
+                                Sign In
+                            </Link>
+                        </p>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );
