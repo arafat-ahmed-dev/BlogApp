@@ -4,6 +4,7 @@ import { Container, PostCard } from "../Component";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { CirclesWithBar } from 'react-loader-spinner';
+
 const Home = () => {
   const authStatus = useSelector((state) => state.auth.status);
   const [posts, setPosts] = useState([]);
@@ -14,8 +15,7 @@ const Home = () => {
       try {
         const response = await appwriteService.getPosts([]);
         if (response) {
-          const activePosts = response.documents.filter(post => post.postStatus === 'Active');
-          setPosts(activePosts);
+          setPosts(response.documents);
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -28,7 +28,6 @@ const Home = () => {
     fetchPosts();
   }, []);
 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[80vh]">
@@ -39,22 +38,6 @@ const Home = () => {
           ariaLabel="circles-with-bar-loading"
           visible={true}
         />
-      </div>
-    );
-  }
-
-  if (!authStatus) {
-    return (
-      <div className='w-full py-8 mt-4 text-center'>
-        <Container>
-          <div className='flex flex-wrap'>
-            <div className='p-2 w-full'>
-              <Link to="/login" className='text-3xl font-bold'>
-                Login to read posts
-              </Link>
-            </div>
-          </div>
-        </Container>
       </div>
     );
   }

@@ -24,15 +24,7 @@ export class Service {
       return false;
     }
   }
-
-  async createPost({
-    title,
-    content,
-    slug,
-    featuredImage,
-    postStatus,
-    userId,
-  }) {
+  async createPost({ title, content, slug, featuredImage, postStatus, userId }) {
     try {
       const response = await this.databases.createDocument(
         conf.databaseId,
@@ -45,85 +37,29 @@ export class Service {
           postStatus,
           userId,
           slug,
-          likes: 0, // Initialize likes count
-          comments: [], // Initialize empty comments array
+          likes: "0,0",
+          likedBy: '[]',      // New: Track users who liked
+          unlikedBy: '[]',    // New: Track users who unliked
+          comments: '[]',
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
-      console.log("Appwrite service :: createPost() :: ", error);
+      console.error("Appwrite service :: createPost() :: ", error);
       return false;
     }
   }
 
-  async updatePost(slug, { title, content, featuredImage, postStatus }) {
-    try {
-      // Ensure 'content' is a valid string and truncate it to 1000 characters if needed
-      if (content && content.length > 1000) {
-        content = content.substring(0, 1000); // Truncate content to 1000 characters
-      }
-
-      // Proceed with updating the document
-      return await this.databases.updateDocument(
-        conf.databaseId,
-        conf.appCollectionId,
-        slug, // Assuming slug is the documentId
-        {
-          title,
-          content, // Updated content
-          featuredImage,
-          postStatus,
-        }
-      );
-    } catch (error) {
-      console.log("Appwrite service :: updateDocument() :: ", error);
-      return false;
-    }
-  }
-
-  async deletePost(slug) {
-    try {
-      await this.databases.deleteDocument(
-        conf.databaseId,
-        conf.appCollectionId,
-        slug
-      );
-      return true;
-    } catch (error) {
-      console.log("Appwrite service :: deleteDocument() :: ", error);
-      return false;
-    }
-  }
-
-  // storage service
-  async uploadFile(file) {
-    try {
-      return await this.bucket.createFile(conf.bucketId, ID.unique(), file);
-    } catch (error) {
-      console.log("Appwrite service :: uploadFile() :: ", error);
-      return false;
-    }
-  }
-
-  async deleteFile(fileId) {
-    try {
-      await this.bucket.deleteFile(conf.bucketId, fileId);
-      return true;
-    } catch (error) {
-      console.log("Appwrite service :: deleteFile() :: ", error);
-      return false;
-    }
-  }
-
-  async updatePostLikes(postId, likes) {
+  async updatePostLikes(postId, likeCount, unlikeCount, likedBy, unlikedBy) {
     try {
       const response = await this.databases.updateDocument(
         conf.databaseId,
         conf.appCollectionId,
         postId,
         {
-          likes,
+          likes: `${likeCount},${unlikeCount}`,
+          likedBy,      // Update likedBy list
+          unlikedBy,    // Update unlikedBy list
         }
       );
       return response;
@@ -147,6 +83,26 @@ export class Service {
     } catch (error) {
       console.error("Error updating post comments:", error);
       throw error;
+    }
+  }
+
+  // Storage service
+  async uploadFile(file) {
+    try {
+      return await this.bucket.createFile(conf.bucketId, ID.unique(), file);
+    } catch (error) {
+      console.log("Appwrite service :: uploadFile() :: ", error);
+      return false;
+    }
+  }
+
+  async deleteFile(fileId) {
+    try {
+      await this.bucket.deleteFile(conf.bucketId, fileId);
+      return true;
+    } catch (error) {
+      console.log("Appwrite service :: deleteFile() :: ", error);
+      return false;
     }
   }
 
