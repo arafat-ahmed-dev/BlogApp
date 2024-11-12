@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import appwriteService from "../AppWrite/config";
 import { Container, PostCard } from "../Component";
-import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CirclesWithBar } from 'react-loader-spinner';
 
 const Home = () => {
-  const authStatus = useSelector((state) => state.auth.status);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-        
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
