@@ -30,27 +30,38 @@ function Login() {
         }
     };
 
+    const loginWithGoogle = async () => {
+        try {
+            await authService.googleLogin();
+        } catch (error) {
+            setError(error.message);
+            console.error("Google login error:", error);
+        }
+    };
+
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-450">
-            <div className="flex flex-col md:flex-row max-w-4xl bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+        <div className="flex items-center justify-center min-h-[90vh] py-4">
+            <div className="w-full max-w-[85%] h-full md:min-w-[85%] md:h-[80vh] bg-[#273143] rounded-lg shadow-lg relative flex items-center justify-center flex-col overflow-hidden md:flex-row sm:flex-col">
                 {/* Left Section */}
-                <div className="p-10 text-white w-full md:w-1/2 flex flex-col items-center justify-center bg-[url('https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] bg-cover bg-center bg-no-repeat">
+                <div className="p-10 text-white w-full h-full md:w-1/2 flex flex-col items-center justify-center bg-[url('https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] bg-cover bg-center bg-no-repeat">
                     <Logo width="80px" />
                     <h2 className="mt-4 text-2xl font-bold text-center">Welcome Back to BlogVerse</h2>
                     <p className="mt-2 text-gray-400">Continue your journey of writing, sharing, and connecting with our vibrant community.</p>
                 </div>
 
                 {/* Right Login Form Section */}
-                <div className="p-10 w-full md:w-1/2 bg-gray-800">
+                <div className="p-10 w-full md:w-1/2">
                     <h2 className="text-2xl font-bold text-center text-white">Sign In to Your Account</h2>
 
                     {/* Social Login Buttons */}
                     <div className="mt-4 space-y-4">
-                        <button className="w-full py-2 bg-white text-gray-900 font-semibold rounded-md flex items-center justify-center gap-2">
+                        <button className="w-full py-2 bg-white text-gray-900 font-semibold rounded-md flex items-center justify-center gap-2"
+                            onClick={loginWithGoogle}>
                             <FontAwesomeIcon icon={faGoogle} />
                             Sign In with Google
                         </button>
-                        <button className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md flex items-center justify-center gap-2">
+                        <button
+                         className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md flex items-center justify-center gap-2">
                             <FontAwesomeIcon icon={faFacebook} />
                             Sign In with Facebook
                         </button>
@@ -70,7 +81,14 @@ function Login() {
                             label="Email"
                             placeholder="example@gmail.com"
                             type="email"
-                            {...register("email", { required: true })}
+                            {...register("email", {
+                                required: true,
+                                validate: {
+                                    matchPattern: (value) =>
+                                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                        "Email address must be a valid address",
+                                },
+                            })}
                         />
                         <Input
                             label="Password"
@@ -83,7 +101,7 @@ function Login() {
                         </Button>
                     </form>
 
-                    <p className="mt-4 text-center text-gray-400">
+                    <p className="mt-4 text-center text-gray-400 md:text-[14px]">
                         Don't have an account?{" "}
                         <Link to="/signup" className="text-yellow-500 font-medium hover:underline">
                             Sign Up

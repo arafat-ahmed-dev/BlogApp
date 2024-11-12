@@ -44,7 +44,7 @@ function App() {
   }, [notification, dispatch]);
 
   return (
-    <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+    <div className='min-h-screen flex flex-wrap content-between bg-[#4e5a68]'>
       <ToastContainer />
       <div className='w-full'>
         <Header />

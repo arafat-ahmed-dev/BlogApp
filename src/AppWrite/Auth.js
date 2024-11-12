@@ -1,4 +1,4 @@
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, OAuthProvider } from "appwrite";
 import conf from "../conf/conf.js";
 
 export class AuthService {
@@ -86,22 +86,16 @@ export class AuthService {
 
   async getCurrentUser() {
     try {
-      // Check if the session is still valid
-      const session = await this.getSessionFromStorage();
+      const session = await this.getSessionFromStorage(); // Check if session exists
       if (session) {
-        // If session is valid, return the user details
-        return await this.account.get();
+        return await this.account.get(); // Return the user data
       } else {
-        console.log("User is not logged in.");
+        console.log("No active session found.");
         return null;
       }
     } catch (error) {
-      if (error.message.includes("missing scope")) {
-        console.log("User is not logged in or lacks necessary permissions.");
-      } else {
-        console.log("Appwrite service :: getCurrentUser :: error", error);
-      }
-      return null; // Return null for easier handling in UI components
+      console.error("Appwrite service :: getCurrentUser :: error", error);
+      return null;
     }
   }
 
@@ -130,6 +124,21 @@ export class AuthService {
     return null;
   }
 
+  async googleLogin() {
+    try {
+      const response = await this.account.createOAuth2Session(
+        OAuthProvider.Google,
+        "http://localhost:5173/oauth",
+        "http://localhost:5173/login"
+      );
+      console.log("Google Login Response:", response); // Log the response to inspect
+
+      return response;
+    } catch (error) {
+      console.error("Appwrite service :: googleLogin :: error", error); // Log error
+      throw error;
+    }
+  }
   // Optional: Redirect to login page if user is not logged in
   redirectToLogin() {
     // This can be a place where you handle UI redirects
