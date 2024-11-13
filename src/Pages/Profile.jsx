@@ -210,11 +210,12 @@ const Profile = () => {
                 </button>
               )}
               {isOwnProfile && (
-                <button
-                  className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
-                >
-                  <LogoutBtn />
-                </button>
+                  <button
+                    className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+                  >
+                    <LogoutBtn />
+                  </button>
+
               )}
             </div>
           )}

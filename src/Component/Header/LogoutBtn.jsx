@@ -9,18 +9,22 @@ function LogoutBtn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Track logout status
 
   const logoutHandler = () => {
-    setShowConfirm(false);
+    setIsLoggingOut(true); // Disable button while logging out
     authService
       .logout()
       .then(() => {
         dispatch(logout());
-        navigate("/");
+        navigate("/login"); // Redirect to login after confirming logout
       })
       .catch((error) => {
         alert("Logout failed. Please try again.");
         console.error("Logout failed:", error);
+      })
+      .finally(() => {
+        setIsLoggingOut(false); // Re-enable button after process completes
       });
   };
 
@@ -34,12 +38,12 @@ function LogoutBtn() {
   return (
     <div className="relative">
       <div
-        onClick={handleLogoutClick}
+        onClick={!isLoggingOut ? handleLogoutClick : null} // Disable click if logging out
         className={buttonStyles}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if ((e.key === 'Enter' || e.key === ' ') && !isLoggingOut) {
             handleLogoutClick();
           }
         }}
@@ -48,7 +52,7 @@ function LogoutBtn() {
       </div>
       {showConfirm && (
         <Confirmation
-          message="Logout"
+          message="logout?"
           onConfirm={logoutHandler}
           onCancel={() => setShowConfirm(false)}
         />
