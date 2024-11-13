@@ -1,23 +1,17 @@
-// src/components/ResetPassword.js
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import authService from "../AppWrite/Auth"; // Ensure the path is correct
+import { useSearchParams, Link } from 'react-router-dom';
+import authService from "../AppWrite/Auth";
 import { useForm } from "react-hook-form";
-import { Button, Input, Logo } from "../Component/index"; // Ensure these components exist
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Button, Input } from "../Component/index";
 
 const ResetPassword = () => {
     const [message, setMessage] = useState('');
     const [searchParams] = useSearchParams();
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { register, handleSubmit } = useForm();
 
     const handleResetPassword = async (data) => {
         setMessage('');
 
-        // Check if passwords match
         if (data.password !== data.confirmPassword) {
             setMessage("Passwords don't match.");
             return;
@@ -26,85 +20,75 @@ const ResetPassword = () => {
         try {
             const userId = searchParams.get('userId');
             const secret = searchParams.get('secret');
-            const password = data.password; // Accessing the password from data
-            const confirmPassword = data.password; // Accessing the password from data
+            const password = data.password;
+            const confirmPassword = data.password;
 
-            // Ensure userId and secret are not null
             if (!userId || !secret) {
                 setMessage("Invalid or missing userId/secret.");
                 return;
             }
 
-            // Call updatePassword with necessary parameters
             await authService.updatePassword({
                 userId,
                 secret,
                 password,
                 confirmPassword
             });
-            
+
             setMessage('Password updated successfully!');
         } catch (error) {
-            console.error("Error updating password:", error); // Log the error for debugging
-            setMessage(error.message || 'Failed to update password.'); // Provide a fallback error message
+            console.error("Error updating password:", error);
+            setMessage(error.message || 'Failed to update password.');
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    const toggleConfirmPasswordVisibility = () => {
-        setShowConfirmPassword(!showConfirmPassword);
-    };
-
     return (
-        <div className="flex items-center justify-center w-full my-5">
-            <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10">
-                <div className="mb-2 flex justify-center">
-                    <span className="inline-block w-full max-w-[100px]">
-                        <Logo width="100%" />
-                    </span>
-                </div>
-                <h2 className="text-center text-2xl font-bold leading-tight">Reset your Password</h2>
-                {message && <p className="text-red-600 mt-8 text-center">{message}</p>}
-                <form onSubmit={handleSubmit(handleResetPassword)} className="mt-8">
-                    <div className="space-y-5">
-                        <div className="relative">
-                            <Input
-                                label="Password : "
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Password"
-                                {...register("password", { required: true })}
-                            />
-                            <button
-                                type="button"
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                                onClick={togglePasswordVisibility}
-                            >
-                                <FontAwesomeIcon className='mt-7' icon={showPassword ? faEye : faEyeSlash} />
-                            </button>
-                        </div>
-                        <div className="relative">
-                            <Input
-                                label="Confirm Password : "
-                                type={showConfirmPassword ? "text" : "password"}
-                                placeholder="Confirm Password"
-                                {...register("confirmPassword", { required: true })}
-                            />
-                            <button
-                                type="button"
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                                onClick={toggleConfirmPasswordVisibility}
-                            >
-                                <FontAwesomeIcon className='mt-7' icon={showConfirmPassword ? faEye : faEyeSlash} />
-                            </button>
-                        </div>
-                        <Button type="submit" className="w-full">
-                            Reset Password
-                        </Button>
+        <div className="flex items-center justify-center min-h-[90vh] px-4">
+            <div className="w-full max-w-md md:min-w-[80%] md:h-[80vh] bg-[#273143] rounded-lg shadow-lg p-8 space-y-6 relative flex flex-col items-center justify-center">
+                {/* Title */}
+                <h2 className="text-center text-white text-2xl font-semibold">Reset Your Password</h2>
+                <p className="text-center text-gray-400">
+                    Create a strong new password to secure your account.
+                </p>
+
+                {/* Success/Error Message */}
+                {message && (
+                    <p className={`text-center p-2 rounded ${message.includes('successfully') ? 'text-green-500' : 'text-red-500'} mb-4`}>
+                        {message}
+                    </p>
+                )}
+
+                {/* Form */}
+                <form onSubmit={handleSubmit(handleResetPassword)} className="w-full space-y-4 md:w-1/3 text-white flex flex-col items-center">
+                    <div>
+                        <Input
+                            type="password"
+                            placeholder="Enter new password"
+                            {...register("password", { required: true })}
+                            className="w-[300px] md:w-[350px] px-4 py-2 text-gray-200 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:border-yellow-500 focus:bg-transparent"
+                        />
+                        <Input
+                            type="password"
+                            placeholder="Confirm new password"
+                            {...register("confirmPassword", { required: true })}
+                            className="w-[300px] md:w-[350px] px-4 py-2 text-gray-200 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:border-yellow-500 focus:bg-transparent"
+                        />
                     </div>
+
+                    <Button type="submit" className="w-[300px] md:w-[350px] bg-yellow-500 font-semibold py-2 rounded-md">
+                        Reset Password
+                    </Button>
                 </form>
+
+                {/* Footer Link */}
+                <div className="mt-6 text-center text-gray-400">
+                    <p>
+                        Remember your password?{" "}
+                        <Link to="/login" className="text-yellow-500 hover:underline">
+                            Sign In
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

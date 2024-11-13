@@ -11,10 +11,12 @@ import AddPost from "./Pages/AddPost.jsx";
 import EditPost from "./Pages/EditPost.jsx";
 import Post from "./Pages/Post.jsx";
 import Home from "./Pages/Home.jsx";
+import Demo from "./assets/demo.jsx";
 import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
 import NotFound from "./Component/NotFound.jsx";
 import Profile from "./Pages/Profile.jsx";
+import OAuthCallback from "./Component/OAuthCallback.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,12 +28,20 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/demo",
+        element: <Demo />,
+      },
+      {
         path: "/login",
         element: (
           <Protected authentication={false}>
             <Login />
           </Protected>
         ),
+      },
+      {
+        path: "/oauth",
+        element: <OAuthCallback />,
       },
       {
         path: "/signup",
@@ -74,6 +84,10 @@ const router = createBrowserRouter([
             <Profile />
           </Protected>
         ),
+      },
+      {
+        path: "/profile/:slug",
+        element: <Profile />,
       },
       {
         path: "/add-post",
