@@ -64,19 +64,17 @@ function MyPosts() {
 
 
   return (
-    <div className="w-full py-8">
-      <Container>
-        <div className="w-full flex flex-wrap justify-center gap-5">
+    <div className="flex-1 min-h-full overflow-y-auto">
+        <div className="flex flex-wrap gap-4 sm:justify-normal justify-center items-center">
           {userPosts.map((post) => (
             <div
               key={post.$id}
-              className="p-2 w-[305px] sm:w-[320px] md:max-w-[310px] flex flex-wrap"
+              className="w-full max-w-[310px] p-2"
             >
               <PostCard {...post} />
             </div>
           ))}
         </div>
-      </Container>
     </div>
   );
 }

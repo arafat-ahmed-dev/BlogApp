@@ -6,7 +6,7 @@ function PostCard({ slug, title, featuredImage }) {
 
   return (
     <Link to={`/post/${slug}`}>
-      <div className='w-full max-w-[310px] bg-gray-100/80 rounded-xl p-4 max-h-[244px] overflow-hidden h-full'>
+      <div className='w-full bg-gray-100/80 rounded-xl p-4 max-h-[244px] overflow-hidden h-full'>
         <div className='w-full justify-center mb-4'>
           <img src={appwriteService.getFilePreview(featuredImage)} alt={title}
             loading='lazy'

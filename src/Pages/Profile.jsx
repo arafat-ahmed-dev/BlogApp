@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
-import { ToastContainer, toast, Zoom } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { LogoutBtn } from "../Component";
+import { setNotification } from "../store/notification";
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState(null);
@@ -95,16 +95,7 @@ const Profile = () => {
     try {
       const response = await profileService.updateProflie(id, { ...formData });
       setProfileData(response);
-      toast('✅ Profile Updated Successfully!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "dark",
-        transition: Zoom,
-      });
+      dispatch(setNotification("✅ Profile Updated Successfully!"));
     } catch (error) {
       console.log("Error saving profile:", error);
     } finally {
@@ -128,7 +119,6 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[70vh]">
-      <ToastContainer />
       <div className="max-w-md w-full bg-gray-100/80 shadow-lg rounded-lg overflow-hidden p-6">
         <div className="text-center">
           <img
@@ -215,7 +205,6 @@ const Profile = () => {
                   >
                     <LogoutBtn />
                   </button>
-
               )}
             </div>
           )}

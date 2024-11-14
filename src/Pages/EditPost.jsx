@@ -35,7 +35,7 @@ function EditPost() {
     
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-[80vh]">
+            <div className="flex justify-center items-center h-screen">
                 <CirclesWithBar
                     height="100"
                     width="100"

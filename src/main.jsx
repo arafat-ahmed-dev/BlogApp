@@ -11,7 +11,6 @@ import AddPost from "./Pages/AddPost.jsx";
 import EditPost from "./Pages/EditPost.jsx";
 import Post from "./Pages/Post.jsx";
 import Home from "./Pages/Home.jsx";
-import Demo from "./assets/demo.jsx";
 import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
 import NotFound from "./Component/NotFound.jsx";
@@ -30,10 +29,6 @@ const router = createBrowserRouter([
             <Home />,
           </Protected>
         )
-      },
-      {
-        path: "/demo",
-        element: <Demo />,
       },
       {
         path: "/login",

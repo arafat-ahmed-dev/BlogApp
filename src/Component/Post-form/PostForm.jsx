@@ -90,16 +90,16 @@ export default function PostForm({ post }) {
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="md:flex md:flex-wrap w-full">
+        <form onSubmit={handleSubmit(submit)} className="md:flex md:flex-wrap w-full dark:text-white">
             <div className="md:w-2/3 px-2">
                 <Input
-                    label="Title :"
+                    label={<span className="font-semibold text-lg text-[14px]">Title :</span>}
                     placeholder="Title"
                     className="mb-4"
                     {...register("title", { required: true })}
                 />
                 <Input
-                    label="Slug :"
+                    label={<span className="font-semibold text-lg text-[14px]">Slug :</span>}
                     placeholder="Slug"
                     className="mb-4"
                     {...register("slug", { required: true })}
@@ -107,13 +107,13 @@ export default function PostForm({ post }) {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
                     }}
                 />
-                <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
+                <RTE label={<span className="font-semibold text-lg text-[14px]">Content :</span>} name="content" control={control} defaultValue={getValues("content")} />
             </div>
             <div className="md:w-1/3 px-2">
                 <Input
-                    label="Featured Image :"
+                    label={<span className="font-semibold text-lg text-[14px]">Featured Image :</span>}
                     type="file"
-                    className="mb-4"
+                    className="mb-4 dark:text-white"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
                 />
@@ -128,7 +128,7 @@ export default function PostForm({ post }) {
                 )}
                 <Select
                     options={["Active", "Inactive"]}
-                    label="Status"
+                    label={<span className="font-semibold text-lg text-[14px]">Status :</span>}
                     className="mb-4"
                     {...register("status", { required: true })}
                     defaultValue={post ? post.postStatus :postStatus} // Bind to local state
