@@ -35,23 +35,24 @@ function EditPost() {
     
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex justify-center items-center h-[80vh] dark:bg-gray-900">
                 <CirclesWithBar
                     height="100"
                     width="100"
                     color="#3498db"
                     ariaLabel="circles-with-bar-loading"
-                    wrapperStyle={{}}
-                    wrapperClass=""
                     visible={true}
                 />
             </div>
         );
     }
+
     return post ? (
-        <div className='py-8'>
+        <div className="flex-1 min-h-full overflow-y-auto dark:bg-gray-900">
             <Container>
-                <PostForm post={post} />
+                <div className="py-8">
+                    <PostForm post={post} />
+                </div>
             </Container>
         </div>
     ) : null

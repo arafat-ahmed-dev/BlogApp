@@ -105,7 +105,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center h-[80vh] dark:bg-gray-900">
         <CirclesWithBar
           height="100"
           width="100"
@@ -118,11 +118,11 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh]">
-      <div className="max-w-md w-full bg-gray-100/80 shadow-lg rounded-lg overflow-hidden p-6">
+    <div className="flex justify-center items-center min-h-[70vh] dark:bg-gray-900">
+      <div className="max-w-md w-full bg-gray-100/80 dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden p-6">
         <div className="text-center">
           <img
-            className="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-blue-500 object-cover object-center"
+            className="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-yellow-400 object-cover object-center"
             src={previewUrl || "https://via.placeholder.com/150"}
             alt="User Profile"
           />
@@ -132,7 +132,7 @@ const Profile = () => {
                 type="file"
                 accept="image/jpeg, image/png, image/webp"
                 onChange={handleImageChange}
-                className="mb-4"
+                className="mb-4 dark:text-gray-300"
               />
               <input
                 type="text"
@@ -140,14 +140,14 @@ const Profile = () => {
                 value={formData.profileName}
                 onChange={handleInputChange}
                 placeholder="Enter name"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
               />
               <textarea
                 name="bio"
                 value={formData.bio}
                 onChange={handleInputChange}
                 placeholder="Enter bio"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
               />
               <input
                 type="text"
@@ -155,19 +155,19 @@ const Profile = () => {
                 value={formData.Country}
                 onChange={handleInputChange}
                 placeholder="Enter country"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
               />
             </div>
           ) : (
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800">
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
                 {profileData?.profileName || "User"}
               </h2>
-              <p className="text-gray-500">{profileData?.email}</p>
+              <p className="text-gray-500 dark:text-gray-400">{profileData?.email}</p>
               <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium text-gray-700">Profile Information</h3>
-                <p className="text-gray-600 mt-2"><strong>Bio:</strong> {profileData?.bio || "No bio available"}</p>
-                <p className="text-gray-600 mt-1"><strong>Country:</strong> {profileData?.Country || "Country not specified"}</p>
+                <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">Profile Information</h3>
+                <p className="text-gray-600 dark:text-gray-400 mt-2"><strong>Bio:</strong> {profileData?.bio || "No bio available"}</p>
+                <p className="text-gray-600 dark:text-gray-400 mt-1"><strong>Country:</strong> {profileData?.Country || "Country not specified"}</p>
               </div>
             </div>
           )}
@@ -177,13 +177,13 @@ const Profile = () => {
           {isEditing && isOwnProfile ? (
             <div>
               <button
-                className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-300 mr-2"
+                className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md hover:bg-yellow-500 transition duration-300 mr-2"
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
-                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
+                className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 transition duration-300"
                 onClick={() => setIsEditing(false)}
               >
                 Cancel
@@ -193,18 +193,18 @@ const Profile = () => {
             <div className="flex items-center gap-4 justify-center">
               {isOwnProfile && (
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
+                  className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-md hover:bg-yellow-500 transition duration-300"
                   onClick={() => setIsEditing(true)}
                 >
                   Edit Profile
                 </button>
               )}
               {isOwnProfile && (
-                  <button
-                    className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
-                  >
-                    <LogoutBtn />
-                  </button>
+                <button
+                  className="bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 transition duration-300"
+                >
+                  <LogoutBtn />
+                </button>
               )}
             </div>
           )}

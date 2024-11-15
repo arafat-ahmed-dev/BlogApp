@@ -63,7 +63,7 @@ export default function Post() {
                     if (foundPost) {
                         setPost(foundPost);
                         setComments(JSON.parse(foundPost.comments || '[]'));
-                        
+
                         // Fetch author profile
                         const authorResponse = await profileService.getProfile(foundPost.userId);
                         if (authorResponse.documents.length > 0) {
@@ -164,7 +164,7 @@ export default function Post() {
             setPost((prev) => ({
                 ...prev,
                 likes: `${likeCount},${updatedUnlikeCount}`,
-                unlikedBy: JSON.stringify(updatedUnlikedBy)
+                unlikedBy: JSON.stringify(updatedUnlikedBy),
             }));
             setUnliked(false);
         } else if (!liked) {
@@ -182,7 +182,7 @@ export default function Post() {
             setPost((prev) => ({
                 ...prev,
                 likes: `${likeCount},${updatedUnlikeCount}`,
-                unlikedBy: JSON.stringify(updatedUnlikedBy)
+                unlikedBy: JSON.stringify(updatedUnlikedBy),
             }));
             setUnliked(true);
         } else {
@@ -204,6 +204,7 @@ export default function Post() {
 
         const comment = {
             author: userData.userData.name || "Anonymous",
+            authorId: userData.userData.$id,
             content: newComment,
             createdAt: new Date().toLocaleString(),
         };
@@ -234,6 +235,7 @@ export default function Post() {
             toast.error("Failed to delete the post. Please try again.");
         }
     };
+
     // Loading state
     if (loading) {
         return (
@@ -267,78 +269,91 @@ export default function Post() {
             )}
             <Container>
                 {/* Post Header */}
-                <div className="w-full text-center mb-4">
-                    <h1 className="text-3xl font-bold text-blue-600 mb-2">{post?.title}</h1>
-                    <p className="text-gray-600">Created by: {" "}
+                <div className="w-full text-center mb-6">
+                    <h1 className="text-2xl lg:text-4xl font-bold text-blue-600 mb-3">
+                        {post?.title}
+                    </h1>
+                    <p className="text-gray-600 text-sm lg:text-base">
+                        Created by:{" "}
                         <Link to={`/profile/${post?.userId}`} className="text-blue-500 hover:text-blue-700">
                             {authorProfile?.profileName || "Unknown Author"}
                         </Link>
                     </p>
                 </div>
 
-                {/* Featured Image and Author Actions */}
-                <div className="w-full flex justify-center mb-4 relative border rounded-xl p-4 bg-gray-100">
+                {/* Featured Image */}
+                <div className="flex justify-center mb-6 relative border rounded-xl p-4 bg-gray-100">
                     <img
                         src={filePreview}
                         alt={post?.title}
-                        className="rounded-xl max-w-full max-h-96"
+                        className="rounded-xl w-full max-w-lg lg:max-w-2xl object-cover"
                     />
                     {isAuthor && (
-                        <div className="absolute right-4 top-4 flex space-x-2">
+                        <div className="absolute right-4 top-4 flex flex-col space-y-2 lg:flex-row lg:space-y-0 lg:space-x-2">
                             <Link to={`/edit-post/${post.slug}`}>
-                                <Button bgColor="bg-green-500">Edit</Button>
+                                <Button
+                                    bgColor="bg-green-500"
+                                    className="w-full px-3 py-2 text-sm lg:text-base rounded-md hover:bg-green-600 transition duration-200"
+                                >
+                                    Edit
+                                </Button>
                             </Link>
-                            <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)}>
+                            <Button
+                                bgColor="bg-red-500"
+                                onClick={() => setShowConfirm(true)}
+                                className="w-full px-3 py-2 text-sm lg:text-base rounded-md hover:bg-red-600 transition duration-200"
+                            >
                                 Delete
                             </Button>
                         </div>
                     )}
+
                 </div>
 
                 {/* Post Content */}
-                <div className="text-lg leading-relaxed text-gray-800 px-6">
+                <div className="text-base lg:text-lg leading-relaxed text-gray-800 px-4 lg:px-10">
                     {post?.content ? parse(post.content) : <p>No content available</p>}
                 </div>
 
                 {/* Like Section */}
-                <div className="flex items-center justify-start space-x-4 mt-4 p-4 rounded-lg shadow-sm">
+                <div className="flex items-center justify-start space-x-4 mt-6 p-4 rounded-lg shadow-sm">
                     <button
                         onClick={handleLikeToggle}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${liked ? "bg-blue-500 text-white border-blue-500" : "text-black border-black"}`}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${liked ? "bg-blue-500 text-white border-blue-500" : "text-black border-black"
+                            }`}
                     >
-                        <FontAwesomeIcon
-                            icon={faThumbsUp}
-                            className="text-xl"
-                        />
+                        <FontAwesomeIcon icon={faThumbsUp} className="text-lg lg:text-xl" />
                         <span className="font-medium">{likeCount} Like</span>
                     </button>
                     <button
                         onClick={handleUnlikeToggle}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${unliked ? "bg-red-500 text-white border-red-500" : "text-red-500 border-red-500"}`}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${unliked ? "bg-red-500 text-white border-red-500" : "text-red-500 border-red-500"
+                            }`}
                     >
-                        <FontAwesomeIcon
-                            icon={faThumbsDown}
-                            className="text-xl"
-                        />
+                        <FontAwesomeIcon icon={faThumbsDown} className="text-lg lg:text-xl" />
                         <span className="font-medium">{unlikeCount} Unlike</span>
                     </button>
                 </div>
 
                 {/* Comments Section */}
-                <div className="mt-6 border-t pt-4 px-6">
-                    <h2 className="text-xl font-semibold mb-4">Comments:</h2>
+                <div className="mt-6 border-t pt-4 px-4 lg:px-10">
+                    <h2 className="text-lg lg:text-xl font-semibold mb-4">Comments:</h2>
                     {comments.map((comment, index) => (
                         <div key={index} className="mb-4">
                             <div className="flex items-center space-x-3 mb-2">
-                                <p className="font-semibold text-gray-800">{comment.author}</p>
-                                <span className="text-gray-500">{comment.createdAt}</span>
+                                <Link to={`/profile/${comment.authorId}`}>
+                                    <p className="font-semibold text-blue-500 hover:text-blue-700">
+                                        {comment.author}
+                                    </p>
+                                </Link>
+                                <span className="text-gray-500 text-sm">{comment.createdAt}</span>
                             </div>
-                            <p className="text-gray-700">{comment.content}</p>
+                            <p className="text-gray-700 text-sm lg:text-base">{comment.content}</p>
                         </div>
                     ))}
                     <div className="mt-4">
                         <textarea
-                            className="w-full p-2 border rounded-lg mb-2"
+                            className="w-full p-2 border rounded-lg mb-2 text-sm lg:text-base"
                             rows="4"
                             placeholder="Add a comment..."
                             value={newComment}
