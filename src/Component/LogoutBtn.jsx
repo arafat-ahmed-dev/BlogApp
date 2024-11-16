@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import authService from "../../AppWrite/Auth";
-import { logout } from "../../store/authSlice";
+import authService from "../AppWrite/Auth";
+import { logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
-import Confirmation from "../Confirmation";
+import Confirmation from "./Confirmation";
 
 function LogoutBtn() {
   const dispatch = useDispatch();

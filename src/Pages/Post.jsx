@@ -11,6 +11,7 @@ import Confirmation from "../Component/Confirmation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 import profileService from "../AppWrite/Profile";
+import user from '../assets/user.png'
 
 export default function Post() {
     // State variables
@@ -205,6 +206,7 @@ export default function Post() {
         const comment = {
             author: userData.userData.name || "Anonymous",
             content: newComment,
+            profilePicture: userData.userData.$id,
             createdAt: new Date().toLocaleString(),
         };
 
@@ -249,7 +251,7 @@ export default function Post() {
         );
     }
 
-    const filePreview = post?.featuredImage ? appwriteService.getFilePreview(post.featuredImage) : "https://via.placeholder.com/150";
+    const filePreview = post?.featuredImage ? appwriteService.getFilePreview(post.featuredImage) : user;
 
     return post ? (
         <div className="w-full bg-white py-8 px-4 shadow-lg">
@@ -330,7 +332,8 @@ export default function Post() {
                     {comments.map((comment, index) => (
                         <div key={index} className="mb-4">
                             <div className="flex items-center space-x-3 mb-2">
-                                <p className="font-semibold text-gray-800">{comment.author}</p>
+                                <img src={appwriteService.getFilePreview(comment.profilePicture) || user} alt={authorProfile?.profileName} className="w-10 h-10 rounded-full object-cover shadow-lg" />
+                                <Link to={`/profile/${authorProfile?.userId}`} className="font-semibold text-gray-800">{comment.author}</Link>
                                 <span className="text-gray-500">{comment.createdAt}</span>
                             </div>
                             <p className="text-gray-700">{comment.content}</p>

@@ -5,6 +5,7 @@ import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
 import { LogoutBtn } from "../Component";
 import { setNotification } from "../store/notification";
+import user from '../assets/user.png'
 
 const Profile = () => {
   const { userData, status } = useSelector((state) => state.auth);
@@ -85,8 +86,8 @@ const Profile = () => {
       const userId = slug || userData?.userData?.$id;
       const response = profileService.getFilePreview(userId);
       setPreviewUrl(response);
-    } catch {
-      console.log("Error fetching image preview");
+    } catch (error) {
+      console.log("Error fetching image preview", error);
     }
   };
 
@@ -105,7 +106,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center h-[60vh]">
         <CirclesWithBar
           height="100"
           width="100"
@@ -118,96 +119,105 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh]">
-      <div className="max-w-md w-full bg-gray-100/80 shadow-lg rounded-lg overflow-hidden p-6">
-        <div className="text-center">
-          <img
-            className="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-blue-500 object-cover object-center"
-            src={previewUrl || "https://via.placeholder.com/150"}
-            alt="User Profile"
-          />
-          {isEditing && isOwnProfile ? (
-            <div>
-              <input
-                type="file"
-                accept="image/jpeg, image/png, image/webp"
-                onChange={handleImageChange}
-                className="mb-4"
-              />
-              <input
-                type="text"
-                name="profileName"
-                value={formData.profileName}
-                onChange={handleInputChange}
-                placeholder="Enter name"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
-              />
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                placeholder="Enter bio"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
-              />
-              <input
-                type="text"
-                name="Country"
-                value={formData.Country}
-                onChange={handleInputChange}
-                placeholder="Enter country"
-                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-md"
-              />
-            </div>
-          ) : (
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {profileData?.profileName || "User"}
-              </h2>
-              <p className="text-gray-500">{profileData?.email}</p>
-              <div className="mt-4 text-center">
-                <h3 className="text-lg font-medium text-gray-700">Profile Information</h3>
-                <p className="text-gray-600 mt-2"><strong>Bio:</strong> {profileData?.bio || "No bio available"}</p>
-                <p className="text-gray-600 mt-1"><strong>Country:</strong> {profileData?.Country || "Country not specified"}</p>
+    <div className="flex-1 min-h-full overflow-y-auto">
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="w-40 h-40 relative">
+                <img
+                  className="w-full h-full rounded-full object-cover border-4 border-yellow-400"
+                  src={previewUrl || user}
+                  alt="User Profile"
+                />
+                {isEditing && isOwnProfile && (
+                  <input
+                    type="file"
+                    accept="image/jpeg, image/png, image/webp"
+                    onChange={handleImageChange}
+                    className="absolute bottom-0 left-0 w-full opacity-0 cursor-pointer"
+                  />
+                )}
+              </div>
+
+              <div className="flex-1">
+                {isEditing && isOwnProfile ? (
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      name="profileName"
+                      value={formData.profileName}
+                      onChange={handleInputChange}
+                      placeholder="Enter name"
+                      className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      placeholder="Enter bio"
+                      className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      rows="3"
+                    />
+                    <input
+                      type="text"
+                      name="Country"
+                      value={formData.Country}
+                      onChange={handleInputChange}
+                      placeholder="Enter country"
+                      className="w-full px-4 py-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <h2 className="text-3xl font-bold dark:text-white">
+                      {profileData?.profileName || "User"}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300">{profileData?.email}</p>
+                    <div className="space-y-2">
+                      <p className="text-gray-700 dark:text-gray-200">
+                        <span className="font-semibold">Bio:</span> {profileData?.bio || "No bio available"}
+                      </p>
+                      <p className="text-gray-700 dark:text-gray-200">
+                        <span className="font-semibold">Country:</span> {profileData?.Country || "Country not specified"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 flex flex-wrap gap-4">
+                  {isEditing && isOwnProfile ? (
+                    <>
+                      <button
+                        onClick={handleSave}
+                        className="px-6 py-2 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    isOwnProfile && (
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() => setIsEditing(true)}
+                          className="px-6 py-2 bg-yellow-400 text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
+                        >
+                          Edit Profile
+                        </button>
+                        <LogoutBtn />
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             </div>
-          )}
-        </div>
-
-        <div className="mt-6 flex justify-center pt-5">
-          {isEditing && isOwnProfile ? (
-            <div>
-              <button
-                className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-300 mr-2"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-              <button
-                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-4 justify-center">
-              {isOwnProfile && (
-                <button
-                  className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
-                  onClick={() => setIsEditing(true)}
-                >
-                  Edit Profile
-                </button>
-              )}
-              {isOwnProfile && (
-                  <button
-                    className="bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition duration-300"
-                  >
-                    <LogoutBtn />
-                  </button>
-              )}
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

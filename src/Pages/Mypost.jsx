@@ -3,6 +3,7 @@ import { Container, PostCard } from "../Component";
 import appwriteService from "../AppWrite/config";
 import { useSelector } from "react-redux";
 import { CirclesWithBar } from 'react-loader-spinner'; 
+import { Link } from "react-router-dom";
 
 function MyPosts() {
   const [posts, setPosts] = useState([]);
@@ -52,9 +53,11 @@ function MyPosts() {
         <Container>
           <div className='flex flex-wrap'>
             <div className='p-2 w-full'>
-              <h1 className='text-3xl font-bold hover:text-gray-500'>
+              <Link to="/add-post">
+              <h1 className='text-3xl font-bold text-black dark:text-white cursor-pointer'>
               You haven't posted anything yet. <br /> Start sharing your thoughts!
               </h1>
+              </Link>
             </div>
           </div>
         </Container>
