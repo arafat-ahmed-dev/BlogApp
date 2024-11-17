@@ -42,7 +42,7 @@
         };
 
         return (
-            <div className="flex items-center justify-center min-h-[90vh]">
+            <div className="flex items-center justify-center min-h-screen bg-[#4e5a68]">
                 <div className="w-full max-w-[85%] h-full md:min-w-[85%] md:h-[80vh] bg-[#273143] rounded-lg shadow-lg relative flex items-center justify-center flex-col overflow-hidden md:flex-row sm:flex-col">
                     {/* Left Section */}
                     <div className="p-10 text-white w-full h-full md:w-1/2 flex flex-col items-center justify-center bg-[url('https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')] bg-cover bg-center bg-no-repeat">

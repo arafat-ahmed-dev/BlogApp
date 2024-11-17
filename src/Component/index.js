@@ -12,6 +12,7 @@ import PostCard from "./PostCard";
 import Protected from "./AuthLayout"
 import Button from "./Button"
 import Input from "./Input"
+import AuthLayout from "./AuthLayout"
 export {
   Footer,
   Container,
@@ -23,6 +24,7 @@ export {
   PostForm,
   PostCard,
   Protected,
+  AuthLayout,
   SignUp,
   Button,
   Input

@@ -20,58 +20,13 @@ import OAuthCallback from "./Component/OAuthCallback.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <App />, // This is the root component (App)
     children: [
       {
         path: "/",
-        element:(
-          <Protected authentication>
-            <Home />,
-          </Protected>
-        )
-      },
-      {
-        path: "/login",
-        element: (
-          <Protected authentication={false}>
-            <Login />
-          </Protected>
-        ),
-      },
-      {
-        path: "/oauth",
-        element: <OAuthCallback />,
-      },
-      {
-        path: "/signup",
-        element: (
-          <Protected authentication={false}>
-            <Signup />
-          </Protected>
-        ),
-      },
-      {
-        path: "/forgot-password",
-        element: (
-          <Protected authentication={false}>
-            <PasswordRecovery />
-          </Protected>
-        ),
-      },
-      {
-        path: "/reset-password",
-        element: (
-          <Protected authentication={false}>
-            <ResetPassword />
-          </Protected>
-        ),
-      },
-      {
-        path: "/my-posts",
         element: (
           <Protected authentication>
-            {" "}
-            <MyPosts />
+            <Home />
           </Protected>
         ),
       },
@@ -79,30 +34,23 @@ const router = createBrowserRouter([
         path: "/profile",
         element: (
           <Protected authentication>
-            {" "}
             <Profile />
           </Protected>
         ),
       },
       {
-        path: "/profile/:slug",
-        element: <Profile />,
-      },
-      {
         path: "/add-post",
         element: (
           <Protected authentication>
-            {" "}
             <AddPost />
           </Protected>
         ),
       },
       {
-        path: "/edit-post/:slug",
+        path: "/my-posts",
         element: (
           <Protected authentication>
-            {" "}
-            <EditPost />
+            <MyPosts />
           </Protected>
         ),
       },
@@ -111,12 +59,57 @@ const router = createBrowserRouter([
         element: <Post />,
       },
       {
+        path: "/edit-post/:slug",
+        element: (
+          <Protected authentication>
+            <EditPost />
+          </Protected>
+        ),
+      },
+      {
         path: "*", // Catch-all route for undefined paths
         element: <NotFound />, // Render the NotFound component
       },
     ],
   },
+  {
+    path: "/login",
+    element: (
+      <Protected authentication={false}>
+        <Login />
+      </Protected>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <Protected authentication={false}>
+        <Signup />
+      </Protected>
+    ),
+  },
+  {
+    path: "/forgot-password", 
+    element: (
+      <Protected authentication={false}>
+        <PasswordRecovery />
+      </Protected>
+    ),
+  },
+  {
+    path: "/reset-password",
+    element: (
+      <Protected authentication={false}>
+        <ResetPassword />
+      </Protected>
+    ),
+  },
+  {
+    path: "/oauth",
+    element: <OAuthCallback />,
+  },
 ]);
+
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <RouterProvider router={router} />

@@ -1,3 +1,4 @@
+// Import necessary dependencies
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import appwriteService from "../AppWrite/config";
@@ -11,10 +12,11 @@ import Confirmation from "../Component/Confirmation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 import profileService from "../AppWrite/Profile";
-import user from '../assets/user.png'
+import user from '../assets/user.png';
+
 
 export default function Post() {
-    // State variables
+    // State management for post data and UI controls
     const [post, setPost] = useState({});
     const [showConfirm, setShowConfirm] = useState(false);
     const [liked, setLiked] = useState(false);
@@ -30,31 +32,26 @@ export default function Post() {
     const location = useLocation();
     const userData = useSelector((state) => state.auth.userData);
 
-    // Derived state
+    // Derived state calculations
     const isAuthor = post && userData ? post.userId === userData.userData.$id : false;
     const successMessage = location.state?.successMessage || "";
     const [likeCount, unlikeCount] = post.likes ? post.likes.split(",").map(Number) : [0, 0];
     const likedBy = post.likedBy ? JSON.parse(post.likedBy) : [];
     const unlikedBy = post.unlikedBy ? JSON.parse(post.unlikedBy) : [];
 
-    // Success message effect
+    // Handle success message display
     useEffect(() => {
         if (successMessage) {
             toast.success(successMessage, {
                 position: "top-right",
                 autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
                 theme: "dark",
-                progress: undefined,
                 transition: Zoom,
             });
         }
     }, [successMessage]);
 
-    // Fetch post data effect
+    // Fetch post data and author profile
     useEffect(() => {
         if (slug) {
             const fetchPost = async () => {
@@ -64,31 +61,27 @@ export default function Post() {
                     if (foundPost) {
                         setPost(foundPost);
                         setComments(JSON.parse(foundPost.comments || '[]'));
-                        
-                        // Fetch author profile
+
                         const authorResponse = await profileService.getProfile(foundPost.userId);
                         if (authorResponse.documents.length > 0) {
                             setAuthorProfile(authorResponse.documents[0]);
                         }
                     } else {
-                        console.error("Post not found");
                         navigate("/");
                     }
                 } catch (error) {
-                    console.error("Error fetching post:", error);
                     toast.error("Failed to load post. Please try again.");
                 } finally {
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1000);
+                    setTimeout(() => setLoading(false), 1000);
                 }
             };
             fetchPost();
         } else {
             navigate("/");
         }
-    }, [slug, navigate, userData]);
+    }, [slug, navigate]);
 
+    // Update like/unlike status based on user data
     useEffect(() => {
         if (userData?.userData) {
             setLiked(likedBy.includes(userData.userData.$id));
@@ -96,15 +89,19 @@ export default function Post() {
         }
     }, [likedBy, unlikedBy, userData]);
 
-    // Like handling
+    // Handle like functionality
     const handleLikeToggle = async () => {
         if (!userData?.userData) {
             toast.error("Please login to like the post");
             return;
         }
 
+        if (isAuthor) {
+            toast.error("You cannot like your own post");
+            return;
+        }
+
         if (liked) {
-            // Remove like
             const updatedLikeCount = likeCount - 1;
             const updatedLikedBy = likedBy.filter(id => id !== userData.userData.$id);
 
@@ -122,7 +119,6 @@ export default function Post() {
             }));
             setLiked(false);
         } else if (!unliked) {
-            // Add like
             const updatedLikeCount = likeCount + 1;
             const updatedLikedBy = [...likedBy, userData.userData.$id];
 
@@ -144,14 +140,19 @@ export default function Post() {
         }
     };
 
+    // Handle unlike functionality
     const handleUnlikeToggle = async () => {
         if (!userData?.userData) {
             toast.error("Please login to unlike the post");
             return;
         }
 
+        if (isAuthor) {
+            toast.error("You cannot unlike your own post");
+            return;
+        }
+
         if (unliked) {
-            // Remove unlike
             const updatedUnlikeCount = unlikeCount - 1;
             const updatedUnlikedBy = unlikedBy.filter(id => id !== userData.userData.$id);
 
@@ -169,7 +170,6 @@ export default function Post() {
             }));
             setUnliked(false);
         } else if (!liked) {
-            // Add unlike
             const updatedUnlikeCount = unlikeCount + 1;
             const updatedUnlikedBy = [...unlikedBy, userData.userData.$id];
 
@@ -191,7 +191,7 @@ export default function Post() {
         }
     };
 
-    // Comment handling
+    // Handle comment addition
     const handleAddComment = async () => {
         if (!userData?.userData) {
             toast.error("Please login to comment");
@@ -218,12 +218,11 @@ export default function Post() {
             setNewComment("");
             toast.success("Comment added successfully!");
         } catch (error) {
-            console.error("Error adding comment:", error);
             toast.error("Failed to add comment. Please try again.");
         }
     };
 
-    // Post deletion
+    // Handle post deletion
     const handleDelete = async () => {
         try {
             const status = await appwriteService.deletePost(post.$id);
@@ -232,11 +231,11 @@ export default function Post() {
                 navigate("/", { state: { successMessage: "Post deleted successfully!" } });
             }
         } catch (error) {
-            console.error("Error deleting post:", error);
             toast.error("Failed to delete the post. Please try again.");
         }
     };
-    // Loading state
+
+    // Loading state UI
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
@@ -251,12 +250,13 @@ export default function Post() {
         );
     }
 
+    // Get file preview URL
     const filePreview = post?.featuredImage ? appwriteService.getFilePreview(post.featuredImage) : user;
 
+    // Main post UI render
     return post ? (
         <div className="w-full bg-white py-8 px-4 shadow-lg">
             <ToastContainer />
-            {/* Confirmation Dialog */}
             {showConfirm && (
                 <Confirmation
                     message="Are you sure you want to delete this post?"
@@ -276,8 +276,18 @@ export default function Post() {
                             {authorProfile?.profileName || "Unknown Author"}
                         </Link>
                     </p>
+                    {/* Author Actions - Mobile */}
+                    {isAuthor && (
+                        <div className="md:hidden flex justify-center space-x-2 mt-4">
+                            <Link to={`/edit-post/${post.slug}`}>
+                                <Button bgColor="bg-green-500" className="text-xs">Edit</Button>
+                            </Link>
+                            <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)} className="text-xs">
+                                Delete
+                            </Button>
+                        </div>
+                    )}
                 </div>
-
                 {/* Featured Image and Author Actions */}
                 <div className="w-full flex justify-center mb-4 relative border rounded-xl p-4 bg-gray-100">
                     <img
@@ -285,79 +295,69 @@ export default function Post() {
                         alt={post?.title}
                         className="rounded-xl max-w-full max-h-96"
                     />
+                    {/* Author Actions - Desktop */}
                     {isAuthor && (
-                        <div className="absolute right-4 top-4 flex space-x-2">
+                        <div className="hidden md:flex absolute right-4 top-4 space-x-2">
                             <Link to={`/edit-post/${post.slug}`}>
-                                <Button bgColor="bg-green-500">Edit</Button>
+                                <Button bgColor="bg-green-500" className="text-sm md:text-base lg:text-lg">Edit</Button>
                             </Link>
-                            <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)}>
+                            <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)} className="text-sm md:text-base lg:text-lg">
                                 Delete
                             </Button>
                         </div>
                     )}
                 </div>
-
                 {/* Post Content */}
-                <div className="text-lg leading-relaxed text-gray-800 px-6">
-                    {post?.content ? parse(post.content) : <p>No content available</p>}
-                </div>
-
-                {/* Like Section */}
-                <div className="flex items-center justify-start space-x-4 mt-4 p-4 rounded-lg shadow-sm">
+                <div className="prose mx-auto">{parse(post?.content || "")}</div>
+                {/* Like/Unlike Buttons */}
+                <div className="flex justify-center space-x-4 mt-4">
                     <button
                         onClick={handleLikeToggle}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${liked ? "bg-blue-500 text-white border-blue-500" : "text-black border-black"}`}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-full ${liked ? "bg-blue-500 text-white" : "border"}`}
                     >
-                        <FontAwesomeIcon
-                            icon={faThumbsUp}
-                            className="text-xl"
-                        />
-                        <span className="font-medium">{likeCount} Like</span>
+                        <FontAwesomeIcon icon={faThumbsUp} />
+                        <span>{likeCount} Like</span>
                     </button>
                     <button
                         onClick={handleUnlikeToggle}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 border-2 ${unliked ? "bg-red-500 text-white border-red-500" : "text-red-500 border-red-500"}`}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-full ${unliked ? "bg-red-500 text-white" : "border"}`}
                     >
-                        <FontAwesomeIcon
-                            icon={faThumbsDown}
-                            className="text-xl"
-                        />
-                        <span className="font-medium">{unlikeCount} Unlike</span>
+                        <FontAwesomeIcon icon={faThumbsDown} />
+                        <span>{unlikeCount} Unlike</span>
                     </button>
                 </div>
-
                 {/* Comments Section */}
-                <div className="mt-6 border-t pt-4 px-6">
-                    <h2 className="text-xl font-semibold mb-4">Comments:</h2>
+                <div className="mt-6 border-t pt-4">
+                    <h2 className="text-lg font-semibold mb-4">Comments:</h2>
                     {comments.map((comment, index) => (
                         <div key={index} className="mb-4">
-                            <div className="flex items-center space-x-3 mb-2">
-                                <img src={appwriteService.getFilePreview(comment.profilePicture) || user} alt={authorProfile?.profileName} className="w-10 h-10 rounded-full object-cover shadow-lg" />
-                                <Link to={`/profile/${authorProfile?.userId}`} className="font-semibold text-gray-800">{comment.author}</Link>
-                                <span className="text-gray-500">{comment.createdAt}</span>
+                            <div className="flex items-center mb-2">
+                                <img src={appwriteService.getFilePreview(comment.profilePicture) || user} alt={comment.author} className="w-10 h-10 rounded-full shadow-lg" />
+                                <Link to={`/profile/${authorProfile?.userId}`} className="font-semibold text-gray-800 ml-2">
+                                    {comment.author}
+                                </Link>
+                                <span className="text-gray-500 text-sm ml-2">{comment.createdAt}</span>
                             </div>
                             <p className="text-gray-700">{comment.content}</p>
                         </div>
                     ))}
-                    <div className="mt-4">
-                        <textarea
-                            className="w-full p-2 border rounded-lg mb-2"
-                            rows="4"
-                            placeholder="Add a comment..."
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        ></textarea>
-                        <button
-                            onClick={handleAddComment}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
-                        >
-                            Add Comment
-                        </button>
-                    </div>
+                    <textarea
+                        className="w-full p-2 border rounded-lg mb-2"
+                        rows="4"
+                        placeholder="Add a comment..."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                    ></textarea>
+                    <button
+                        onClick={handleAddComment}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    >
+                        Add Comment
+                    </button>
                 </div>
             </Container>
         </div>
     ) : (
-        <div>Post not found.</div>
+        <p>Post not found</p>
     );
 }

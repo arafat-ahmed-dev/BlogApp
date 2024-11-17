@@ -224,7 +224,7 @@ function Layout() {
                             </>
                         )}
                     </header>
-                    <div className="w-full min-w-[320px] h-full min-h-full flex-1 overflow-y-auto p-6 dark:bg-gray-900 bg-white space-y-8 border-black">
+                    <div className="w-full min-w-[320px] h-full min-h-full flex-1 p-6 dark:bg-gray-900 bg-white space-y-8 border-black">
                         <Outlet />
                     </div>
                 </main>

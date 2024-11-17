@@ -4,7 +4,7 @@ import { SignUp } from '../Component';
 
 const Signup = () => {
   return (
-    <div className='py-8'>
+    <div >
       <SignUp/>
     </div>
   )
