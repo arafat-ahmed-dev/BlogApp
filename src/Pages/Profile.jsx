@@ -17,11 +17,12 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     profileName: "",
-    bio: "",
+    bio: "", 
     Country: "",
     profilePictureUrl: "",
   });
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [initialFormData, setInitialFormData] = useState(null);
 
   const isOwnProfile = !slug || (userData?.userData?.$id === slug);
 
@@ -42,14 +43,16 @@ const Profile = () => {
       const profile = response.documents[0];
       setProfileData(profile);
       if (isOwnProfile) {
-        setFormData({
+        const formValues = {
           profileName: profile.profileName || "",
           bio: profile.bio || "",
           Country: profile.Country || "",
           email: profile.email || "",
           profilePictureUrl: profile.profilePictureUrl || "",
-        });
-      }
+        };
+        setFormData(formValues);
+        setInitialFormData(formValues);
+      }   
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
@@ -91,12 +94,23 @@ const Profile = () => {
     }
   };
 
+  const isProfileChanged = () => {
+    return JSON.stringify(formData) !== JSON.stringify(initialFormData);
+  };
+
   const handleSave = async () => {
     const id = userData.userData.$id;
     try {
+      if (!isProfileChanged()) {
+        setIsEditing(false);
+        return;
+      }
       const response = await profileService.updateProflie(id, { ...formData });
-      setProfileData(response);
-      dispatch(setNotification("✅ Profile Updated Successfully!"));
+      if(response){
+        setProfileData(response);
+        setInitialFormData(formData);
+        dispatch(setNotification("✅ Profile Updated Successfully!"));
+      }
     } catch (error) {
       console.log("Error saving profile:", error);
     } finally {
@@ -129,6 +143,7 @@ const Profile = () => {
                   className="w-full h-full rounded-full object-cover border-4 border-yellow-400"
                   src={previewUrl || user}
                   alt="User Profile"
+                  loading="lazy"
                 />
                 {isEditing && isOwnProfile && (
                   <input

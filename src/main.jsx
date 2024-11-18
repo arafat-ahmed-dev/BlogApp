@@ -39,6 +39,10 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/profile/:id",
+        element: <Profile />,
+      },
+      {
         path: "/add-post",
         element: (
           <Protected authentication>
