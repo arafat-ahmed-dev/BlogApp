@@ -50,6 +50,16 @@ export class Service {
     }
   }
 
+  async deletePost(postId) {
+    try {
+      await this.databases.deleteDocument(conf.databaseId, conf.appCollectionId, postId);
+      return true;
+    } catch (error) {
+      console.error("Appwrite service :: deletePost() :: ", error);
+      return false;
+    }
+  }
+
   async updatePostLikes(postId, likeCount, unlikeCount, likedBy, unlikedBy) {
     try {
       const response = await this.databases.updateDocument(

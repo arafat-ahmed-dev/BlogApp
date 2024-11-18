@@ -32,9 +32,9 @@ const HomePage = () => {
     return (
       <div className="flex-1 min-h-full overflow-y-auto">
         <section>
-          <h2 className="text-xl md:text-2xl font-semibold dark:text-white mb-4">Featured Blogs</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:justify-normal justify-center items-center">
-            {[1, 2, 3, 4, 5, 6 , 7, 8].map((n) => (
+          <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 place-items-center">
+            {[1, 2, 3, 4, 5, 6 , 7, 8 , 9].map((n) => (
               <div key={n} className="w-full max-w-[310px] p-2">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                   <div className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>

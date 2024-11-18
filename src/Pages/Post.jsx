@@ -7,7 +7,6 @@ import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { CirclesWithBar } from 'react-loader-spinner';
 import Confirmation from "../Component/Confirmation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
@@ -48,6 +47,8 @@ export default function Post() {
                 theme: "dark",
                 transition: Zoom,
             });
+            // Clear success message from location state
+            window.history.replaceState({}, document.title);
         }
     }, [successMessage]);
 
@@ -236,18 +237,45 @@ export default function Post() {
     };
 
     // Loading state UI
+    const ShimmerPost = () => (
+        <div className="w-full bg-gray-700 py-8 px-4 shadow-lg animate-pulse">
+            <Container>
+                <div className="w-full text-center mb-4">
+                    <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                </div>
+                <div className="w-full flex justify-center mb-4 relative">
+                    <div className="h-96 bg-gray-200 rounded-xl w-full"></div>
+                </div>
+                <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                </div>
+                <div className="flex justify-center space-x-4 mt-4">
+                    <div className="h-10 bg-gray-200 rounded-full w-24"></div>
+                    <div className="h-10 bg-gray-200 rounded-full w-24"></div>
+                </div>
+                <div className="mt-6 border-t pt-4">
+                    <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+                    <div className="space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="flex items-start space-x-2">
+                                <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </Container>
+        </div>
+    );
+
     if (loading) {
-        return (
-            <div className="flex justify-center items-center h-[80vh]">
-                <CirclesWithBar
-                    height="100"
-                    width="100"
-                    color="#3498db"
-                    ariaLabel="circles-with-bar-loading"
-                    visible={true}
-                />
-            </div>
-        );
+        return <ShimmerPost />;
     }
 
     // Get file preview URL
@@ -259,7 +287,7 @@ export default function Post() {
             <ToastContainer />
             {showConfirm && (
                 <Confirmation
-                    message="Are you sure you want to delete this post?"
+                    message="delete post"
                     onConfirm={() => {
                         handleDelete();
                         setShowConfirm(false);
