@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Container, PostCard } from "../Component";
 import appwriteService from "../AppWrite/config";
 import { useSelector } from "react-redux";
-import { CirclesWithBar } from 'react-loader-spinner'; 
 import { Link } from "react-router-dom";
 
 function MyPosts() {
@@ -31,18 +30,27 @@ function MyPosts() {
 
     fetchPosts();
   }, []);
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <CirclesWithBar
-          height="100"
-          width="100"
-          color="#3498db"
-          ariaLabel="circles-with-bar-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          visible={true}
-        />
+      <div className="flex-1 min-h-full overflow-y-auto p-4">
+        <div className="flex flex-wrap gap-4 sm:justify-normal justify-center">
+          {[1, 2, 3].map((index) => (
+            <div key={index} className="w-full max-w-[310px] p-2">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                <div className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4" />
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2" />
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

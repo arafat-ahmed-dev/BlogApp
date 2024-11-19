@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { CirclesWithBar } from "react-loader-spinner";
 import profileService from "../AppWrite/Profile";
 import { LogoutBtn } from "../Component";
 import { setNotification } from "../store/notification";
@@ -120,14 +119,26 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <CirclesWithBar
-          height="100"
-          width="100"
-          color="#3498db"
-          ariaLabel="circles-with-bar-loading"
-          visible={true}
-        />
+      <div className="flex-1 min-h-full overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <div className="p-6">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="w-40 h-40 relative">
+                  <div className="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -144,6 +155,7 @@ const Profile = () => {
                   src={previewUrl || user}
                   alt="User Profile"
                   loading="lazy"
+                  onError={(e) => {e.target.src = user}}
                 />
                 {isEditing && isOwnProfile && (
                   <input

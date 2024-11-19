@@ -60,6 +60,13 @@ function Layout() {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+
     useEffect(() => {
         authService.getCurrentUser()
             .then((userData) => {
@@ -140,7 +147,7 @@ function Layout() {
                                 </button>
                             </div>
                             <div className="flex-1 max-w-xl relative w-full">
-                                <form onSubmit={(e) => e.preventDefault()} className="flex-1 max-w-xl relative">
+                                <form onSubmit={handleSearch} className="flex-1 max-w-xl relative">
                                     <input
                                         type="search"
                                         placeholder="Search posts..."
@@ -148,7 +155,9 @@ function Layout() {
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                                    <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2">
+                                        <Search className="h-4 w-4 text-gray-500" />
+                                    </button>
                                 </form>
                             </div>
                         </>
@@ -203,7 +212,7 @@ function Layout() {
                     <header className="hidden md:flex border-b dark:border-gray-800 bg-yellow-400 dark:bg-gray-900 p-4 justify-between gap-5 items-center">
                         {loading ? <DesktopShimmerHeader /> : (
                             <>
-                                <form onSubmit={(e) => e.preventDefault()} className="flex-1 max-w-xl relative">
+                                <form onSubmit={handleSearch} className="flex-1 max-w-xl relative">
                                     <input
                                         type="search"
                                         placeholder="Search posts..."
@@ -211,7 +220,9 @@ function Layout() {
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                                    <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2">
+                                        <Search className="h-4 w-4 text-gray-500" />
+                                    </button>
                                 </form>
 
                                 <div className="flex items-center gap-4">

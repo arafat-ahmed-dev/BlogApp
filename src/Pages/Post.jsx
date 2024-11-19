@@ -24,6 +24,7 @@ export default function Post() {
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(true);
     const [authorProfile, setAuthorProfile] = useState(null);
+    const [showAllComments, setShowAllComments] = useState(false);
 
     // Router and Redux hooks
     const { slug } = useParams();
@@ -357,11 +358,17 @@ export default function Post() {
                 {/* Comments Section */}
                 <div className="mt-6 border-t pt-4">
                     <h2 className="text-lg font-semibold mb-4">Comments:</h2>
-                    {comments.map((comment, index) => (
+                    {/* Display first 3 comments */}
+                    {comments.slice(0, 3).map((comment, index) => (
                         <div key={index} className="mb-4">
                             <div className="flex items-center mb-2">
-                                <img src={appwriteService.getFilePreview(comment.profilePicture) || user} alt={comment.author} className="w-10 h-10 rounded-full shadow-lg" />
-                                <Link to={`/profile/${authorProfile?.userId}`} className="font-semibold text-gray-800 ml-2">
+                                <img 
+                                    src={appwriteService.getFilePreview(comment.profilePicture) || user} 
+                                    alt={comment.author} 
+                                    className="w-10 h-10 rounded-full shadow-lg" 
+                                    onError={(e) => {e.target.src = user}}
+                                />
+                                <Link to={`/profile/${comment?.profilePicture}`} className="font-semibold text-gray-800 ml-2">
                                     {comment.author}
                                 </Link>
                                 <span className="text-gray-500 text-sm ml-2">{comment.createdAt}</span>
@@ -369,6 +376,46 @@ export default function Post() {
                             <p className="text-gray-700">{comment.content}</p>
                         </div>
                     ))}
+
+                    {/* Show "See More" button if there are more than 3 comments */}
+                    {comments.length > 3 && !showAllComments && (
+                        <button
+                            onClick={() => setShowAllComments(true)}
+                            className="text-blue-500 hover:text-blue-700 font-semibold mb-4"
+                        >
+                            See More Comments ({comments.length - 3} more)
+                        </button>
+                    )}
+
+                    {/* Display remaining comments when showAllComments is true */}
+                    {showAllComments && comments.slice(3).map((comment, index) => (
+                        <div key={index + 3} className="mb-4">
+                            <div className="flex items-center mb-2">
+                                <img 
+                                    src={appwriteService.getFilePreview(comment.profilePicture) || user} 
+                                    alt={comment.author} 
+                                    className="w-10 h-10 rounded-full shadow-lg" 
+                                    onError={(e) => {e.target.src = user}}
+                                />
+                                <Link to={`/profile/${comment?.profilePicture}`} className="font-semibold text-gray-800 ml-2">
+                                    {comment.author}
+                                </Link>
+                                <span className="text-gray-500 text-sm ml-2">{comment.createdAt}</span>
+                            </div>
+                            <p className="text-gray-700">{comment.content}</p>
+                        </div>
+                    ))}
+
+                    {/* Show "See Less" button when showing all comments */}
+                    {showAllComments && comments.length > 3 && (
+                        <button
+                            onClick={() => setShowAllComments(false)}
+                            className="text-blue-500 hover:text-blue-700 font-semibold mb-4"
+                        >
+                            See Less
+                        </button>
+                    )}
+
                     <textarea
                         className="w-full p-2 border rounded-lg mb-2"
                         rows="4"

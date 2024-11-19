@@ -1,4 +1,4 @@
-import { Client, Account, ID, OAuthProvider } from "appwrite";
+import { Client, Account, ID } from "appwrite";
 import conf from "../conf/conf.js";
 
 export class AuthService {
@@ -122,28 +122,6 @@ export class AuthService {
       return session;
     }
     return null;
-  }
-
-  async googleLogin() {
-    try {
-      const response = await this.account.createOAuth2Session(
-        OAuthProvider.Google,
-        "http://localhost:5173/oauth",
-        "http://localhost:5173/login"
-      );
-      console.log("Google Login Response:", response); // Log the response to inspect
-
-      return response;
-    } catch (error) {
-      console.error("Appwrite service :: googleLogin :: error", error); // Log error
-      throw error;
-    }
-  }
-  // Optional: Redirect to login page if user is not logged in
-  redirectToLogin() {
-    // This can be a place where you handle UI redirects
-    // Example: window.location.href = '/login';
-    console.log("Redirecting to login...");
   }
 }
 

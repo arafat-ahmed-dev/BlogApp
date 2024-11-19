@@ -6,8 +6,6 @@
     import { useForm } from "react-hook-form";
     import authService from "../AppWrite/Auth";
     import appwriteService from "../AppWrite/Profile";
-    import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-    import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
 
     const SignUp = () => {
         const { register, handleSubmit } = useForm();
@@ -18,14 +16,22 @@
         const create = async (data) => {
             setError("");
             try {
-                const userData = await authService.createAccount(data);
+                console.log(data);
+                // Combine first and last name before creating account
+                const name = `${data.firstName} ${data.lastName}`;
+                const accountData = {
+                    email: data.email,
+                    password: data.password,
+                    name: name
+                };
+                const userData = await authService.createAccount(accountData);
                 if (userData) {
                     const currentUser = await authService.getCurrentUser();
                     if (currentUser) {
                         dispatch(login({ userData: currentUser }));
                         try {
                             await appwriteService.createProfile({
-                                profileName: `${data.firstName} ${data.lastName}`,
+                                profileName: name,
                                 email: currentUser.email,
                                 userId: currentUser.$id,
                             });
@@ -55,24 +61,6 @@
                     <div className="p-10 w-full md:w-1/2">
                         <h2 className="text-2xl font-bold text-center text-white">Sign Up for an Account</h2>
 
-                        {/* Social Sign-Up Buttons */}
-                        <div className="mt-4 space-y-4">
-                            <button className="w-full py-2 bg-white text-gray-900 font-semibold rounded-md flex items-center justify-center gap-2">
-                                <FontAwesomeIcon icon={faGoogle} />
-                                Sign Up with Google
-                            </button>
-                            <button className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md flex items-center justify-center gap-2">
-                                <FontAwesomeIcon icon={faFacebook} />
-                                Sign Up with Facebook
-                            </button>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="mt-4 flex items-center">
-                            <hr className="flex-1 border-gray-500" />
-                            <span className="mx-4 text-gray-400">or</span>
-                            <hr className="flex-1 border-gray-500" />
-                        </div>
 
                         {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
 

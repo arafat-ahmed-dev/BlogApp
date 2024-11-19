@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container } from "../Component";
 import PostForm from "../Component/Post-form/PostForm";
-import { CirclesWithBar } from 'react-loader-spinner';
 
 const AddPost = () => {
   const [loading, setLoading] = useState(true);
 
-  // Simulate loading delay (e.g., fetching data or resources)
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // 2-second delay
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -16,15 +14,26 @@ const AddPost = () => {
     <div className='py-8'>
       <Container>
         {loading ? (
-          <div className="flex justify-center items-center h-[60vh">
-            <CirclesWithBar 
-              height="80" 
-              width="80" 
-              color="#4fa94d" 
-              wrapperStyle={{}}
-              visible={true}
-              ariaLabel='loading-indicator'
-            />
+          <div className="max-w-2xl mx-auto p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+              <div className="p-6 space-y-4">
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/4" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                </div>
+                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2" />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24" />
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24" />
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <PostForm />

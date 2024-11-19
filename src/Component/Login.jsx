@@ -4,10 +4,8 @@ import { login as authLogin } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import authService from "../AppWrite/Auth";
-import { setNotification, clearNotification } from "../store/notification";
+import { setNotification } from "../store/notification";
 import { Logo, Button, Input } from "./index";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
 
 function Login() {
     const navigate = useNavigate();
@@ -31,12 +29,8 @@ function Login() {
     };
 
     const loginWithGoogle = async () => {
-        try {
-            await authService.googleLogin();
-        } catch (error) {
-            setError(error.message);
-            console.error("Google login error:", error);
-        }
+        const response = await authService.googleLogin();
+        console.log(response);
     };
 
     return (
@@ -52,27 +46,6 @@ function Login() {
                 {/* Right Login Form Section */}
                 <div className="p-10 w-full md:w-1/2">
                     <h2 className="text-2xl font-bold text-center text-white">Sign In to Your Account</h2>
-
-                    {/* Social Login Buttons */}
-                    <div className="mt-4 space-y-4">
-                        <button className="w-full py-2 bg-white text-gray-900 font-semibold rounded-md flex items-center justify-center gap-2"
-                            onClick={loginWithGoogle}>
-                            <FontAwesomeIcon icon={faGoogle} />
-                            Sign In with Google
-                        </button>
-                        <button
-                         className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md flex items-center justify-center gap-2">
-                            <FontAwesomeIcon icon={faFacebook} />
-                            Sign In with Facebook
-                        </button>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="mt-4 flex items-center">
-                        <hr className="flex-1 border-gray-500" />
-                        <span className="mx-4 text-gray-400">or</span>
-                        <hr className="flex-1 border-gray-500" />
-                    </div>
 
                     {error && <p className="text-red-600 mt-4 text-center">{error}</p>}
 

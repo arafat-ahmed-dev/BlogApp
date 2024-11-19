@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Container, PostForm } from "../Component"
 import appwriteService from "../AppWrite/config"
 import { useNavigate, useParams } from 'react-router-dom'
-import { CirclesWithBar } from 'react-loader-spinner';
 
 function EditPost() {
     const [post, setPosts] = useState(null)
@@ -35,16 +34,20 @@ function EditPost() {
     
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <CirclesWithBar
-                    height="100"
-                    width="100"
-                    color="#3498db"
-                    ariaLabel="circles-with-bar-loading"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                />
+            <div className="max-w-2xl mx-auto p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-6 space-y-4">
+                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/4" />
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4" />
+                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                        </div>
+                        <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                        <div className="flex justify-end">
+                            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24" />
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

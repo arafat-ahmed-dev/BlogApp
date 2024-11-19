@@ -15,7 +15,6 @@ import PasswordRecovery from "./Pages/PasswordRecovery.jsx";
 import ResetPassword from "./Pages/ResetPassword.jsx";
 import NotFound from "./Component/NotFound.jsx";
 import Profile from "./Pages/Profile.jsx";
-import OAuthCallback from "./Component/OAuthCallback.jsx";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +38,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/profile/:id",
+        path: "/profile/:slug",
         element: <Profile />,
       },
       {
@@ -107,10 +106,6 @@ const router = createBrowserRouter([
         <ResetPassword />
       </Protected>
     ),
-  },
-  {
-    path: "/oauth",
-    element: <OAuthCallback />,
   },
 ]);
 
